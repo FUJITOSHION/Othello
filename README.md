@@ -52,3 +52,7 @@ import { pagesPath } from "@path"
 
 - ブランチ運用は [Github Flow](https://guides.github.com/introduction/flow/#:~:text=GitHub%20flow%20is%20a%20lightweight,where%20deployments%20are%20made%20regularly.) に従う
 - コミットメッセージ, Issue, プルリクは日本語で統一
+
+## モック画面
+
+[今回のオセロゲームのモック画面](https://whimsical.com/WSpn3uDY2eU71b6HdbXSTY)
