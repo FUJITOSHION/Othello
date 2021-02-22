@@ -12,6 +12,7 @@
     "lint": "yarn typecheck && run-p lint:*",
     "lint:eslint": "eslint src --ext .ts,.tsx,.jsx",
     "lint:stylelint": "stylelint 'src/styles/**/*.{css,scss}'",
+    "lint:prettier": "prettier '**/*.{ts,tsx,js,jsx,json,css,scss}' --check",
     "fix": "run-p fix:*",
     "fix:eslint": "yarn lint:eslint --fix",
     "fix:stylelint": "yarn lint:stylelint --fix",
