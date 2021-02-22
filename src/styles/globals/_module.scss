@@ -1,0 +1,17 @@
+.m-un-selectable {
+  user-select: none;
+}
+
+.m-page-title {
+  font-size: 1.5rem;
+  margin: 15px 0;
+}
+
+.m-remove-a-decoration {
+  &,
+  &:visited,
+  &:hover {
+    color: inherit;
+    text-decoration: none;
+  }
+}

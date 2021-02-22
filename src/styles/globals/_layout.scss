@@ -1,0 +1,21 @@
+@use "./variable" as var;
+
+.l-page-wrapper {
+  transform: scale(1); // スタッキングコンテキスト
+}
+
+.l-header {
+  height: var.$header-height;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.l-content {
+  min-height: calc(100vh - (#{var.$header-height} + #{var.$footer-height}));
+}
+
+.l-footer {
+  height: var.$footer-height;
+}

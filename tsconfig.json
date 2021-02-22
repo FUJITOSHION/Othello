@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["dom", "esnext"],
+    "baseUrl": "./src",
+    "paths": {
+      "@path": ["lib/$path.ts"],
+      "@components/*": ["components/*"],
+      "@hooks/*": ["hooks/*"],
+      "@pages/*": ["pages/*"],
+      "@store": ["store"],
+      "@store/*": ["store/*"],
+      "@styles/*": ["styles/*"],
+      "@public/*": ["public/*"],
+      "types/*": ["types/*"]
+    },
+    "strict": true,
+    "jsx": "preserve",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "files": ["@types/globals.d.ts", "@types/vendors.d.ts"],
+  "include": ["src/**/*"],
+  "exclude": ["dist", "out", "node_modules", "tests"]
+}

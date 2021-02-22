@@ -1,0 +1,18 @@
+@use "sass:color";
+// color
+// base color
+$black: #303030 !default;
+$black-weak: #707070 !default;
+$black-thin: transparentize($black, $amount: 0.8) !default;
+$white: #fafafa !default;
+$white-weak: #dfdfdf !default;
+$green: #64dd17 !default;
+$skyblue: #00b0ff !default;
+// site color
+$text-color: $black !default;
+$link-color: $skyblue !default;
+$success-color: $green !default;
+
+// layout
+$header-height: 60px !default;
+$footer-height: 150px !default;

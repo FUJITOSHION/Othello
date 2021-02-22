@@ -1,0 +1,63 @@
+{
+  "name": "next-ssg-boiler",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "run-p dev:*",
+    "dev:next": "next dev",
+    "dev:path": "pathpida --watch",
+    "build": "pathpida && next build && next export",
+    "start": "yarn build && http-server out -p 80",
+    "typecheck": "tsc -p . --noEmit",
+    "lint": "yarn typecheck && run-p lint:*",
+    "lint:eslint": "eslint src --ext .ts,.tsx,.jsx",
+    "lint:stylelint": "stylelint 'src/styles/**/*.{css,scss}'",
+    "fix": "run-p fix:*",
+    "fix:eslint": "yarn lint:eslint --fix",
+    "fix:stylelint": "yarn lint:stylelint --fix",
+    "fix:prettier": "prettier '**/*.{ts,tsx,js,jsx,json,css,scss}' --write",
+    "test": "jest"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint"
+    }
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.5.0",
+    "modern-css-reset": "^1.4.0",
+    "next": "10.0.6",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-redux": "^7.2.2",
+    "redux": "^4.0.5",
+    "redux-logger": "^3.0.6"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.20",
+    "@types/node": "^14.14.22",
+    "@types/react": "^17.0.1",
+    "@types/react-redux": "^7.1.16",
+    "@types/redux-logger": "^3.0.8",
+    "@typescript-eslint/eslint-plugin": "^4.14.2",
+    "@typescript-eslint/parser": "^4.14.2",
+    "eslint": "^7.19.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-react": "^7.22.0",
+    "http-server": "^0.12.3",
+    "husky": "^4.3.8",
+    "jest": "^26.6.3",
+    "npm-run-all": "^4.1.5",
+    "pathpida": "^0.13.0",
+    "prettier": "^2.2.1",
+    "sass": "^1.32.6",
+    "stylelint": "^13.9.0",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-recommended": "^3.0.0",
+    "stylelint-config-standard-scss": "^1.1.0",
+    "stylelint-scss": "^3.18.0",
+    "ts-jest": "^26.5.0",
+    "tsc": "^1.20150623.0",
+    "typescript": "^4.1.3"
+  }
+}
