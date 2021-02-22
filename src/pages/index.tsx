@@ -2,6 +2,7 @@ import Head from "next/head"
 import { useState } from "react"
 
 import styles from "@styles/modules/Home.module.scss"
+import { SelectionCpuLevel } from "../components/SelectionCpuLevel"
 
 export default function Home(): JSX.Element {
   const [kagawa, setKagawa] = useState<boolean>(false)
@@ -39,6 +40,7 @@ export default function Home(): JSX.Element {
           </label>
         </li>
       </ul>
+      <SelectionCpuLevel />
       <button disabled={!(kagawa && isAgreeCpu)}>ゲームを開始する</button>
     </div>
   )
