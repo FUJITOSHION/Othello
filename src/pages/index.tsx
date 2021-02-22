@@ -1,7 +1,5 @@
-import Head from "next/head"
 import { useState } from "react"
 
-import { Greet } from "@components/greet"
 import styles from "@styles/modules/Home.module.scss"
 
 export default function Home(): JSX.Element {
