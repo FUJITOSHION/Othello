@@ -13,6 +13,7 @@
       "@store/*": ["store/*"],
       "@styles/*": ["styles/*"],
       "@public/*": ["public/*"],
+      "@utils/*": ["utils/*"],
       "types/*": ["types/*"]
     },
     "strict": true,
