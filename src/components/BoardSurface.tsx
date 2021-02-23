@@ -7,6 +7,7 @@ import { validIndexes } from "../utils/game/board-index"
 import { apply } from "../utils/game/simulate"
 import { useState } from "react"
 import { MCTS } from "@utils/mcts"
+import { CalcGameTime } from "./CalcGameTime"
 
 export const BoardSurface: React.FC = () => {
   const isAiWhite = true
@@ -98,6 +99,7 @@ export const BoardSurface: React.FC = () => {
           ))}
         </div>
       ))}
+      <CalcGameTime />
     </div>
   )
 }
