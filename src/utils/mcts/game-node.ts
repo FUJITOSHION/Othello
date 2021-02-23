@@ -10,11 +10,11 @@ export class GameNode {
   private state: GameState
   private children: GameNode[]
 
-  constructor(state: GameState) {
+  constructor(state: GameState, isRoot = false) {
     this.attemptNumber = 0
     this.winNumber = 0
     this.state = state
-    this.children = []
+    this.children = isRoot ? this.possibleChildNodes() : []
   }
 
   select(config: MctsConfig): GameNode {
@@ -37,9 +37,7 @@ export class GameNode {
       // 試行数 > 敷地値のとき、拡張する
       // 有効な子ノード(次に取りうる選択肢すべて)を生成する
 
-      this.children = validIndexes(this.state)
-        .map((index) => apply(this.state, index))
-        .map((state) => new GameNode(state))
+      this.children = this.possibleChildNodes()
     }
   }
 
@@ -48,9 +46,15 @@ export class GameNode {
     let checkResult = checkFin(currentState)
 
     while (!checkResult.isFin) {
-      const validMoves = validIndexes(this.state)
-        .map((index) => apply(this.state, index))
-        .map((state) => new GameNode(state))
+      const validMoves = new GameNode(currentState).possibleChildNodes()
+      if (validMoves.length === 0) {
+        currentState = {
+          boardState: currentState.boardState,
+          nextPlayer: currentState.nextPlayer === "ai" ? "opponent" : "ai",
+        }
+        checkResult = checkFin(currentState)
+        continue
+      }
 
       currentState = validMoves[getRandomInt(0, validMoves.length - 1)].state
       checkResult = checkFin(currentState)
@@ -59,9 +63,31 @@ export class GameNode {
     return checkResult.winner === "ai"
   }
 
+  score(): string {
+    return `${this.winNumber} / ${this.attemptNumber} (${(
+      (100 * this.winNumber) /
+      this.attemptNumber
+    ).toFixed(0)} %)`
+  }
+
   reflectResult(isWin: boolean): void {
     this.attemptNumber += 1
     this.winNumber += isWin ? 1 : 0
+  }
+
+  possibleChildNodes(): GameNode[] {
+    const valids = validIndexes(this.state)
+      .map((index) => apply(this.state, index))
+      .map((state) => new GameNode(state))
+
+    return valids.length !== 0
+      ? valids
+      : [
+          new GameNode({
+            boardState: this.state.boardState,
+            nextPlayer: this.state.nextPlayer === "ai" ? "opponent" : "ai",
+          }),
+        ]
   }
 
   isLeaf(): boolean {
@@ -69,14 +95,21 @@ export class GameNode {
   }
 
   uct(parentNode: GameNode, config: MctsConfig): number {
-    return this.reward() + this.attemptNumber !== 0
-      ? (2 * config.CP * Math.sqrt(2 * Math.log(parentNode.attemptNumber))) /
-          this.attemptNumber
-      : 99999999
+    const reward = this.reward()
+    const bias =
+      this.attemptNumber !== 0
+        ? 2 *
+          config.CP *
+          Math.sqrt(
+            (2 * Math.log(parentNode.attemptNumber)) / this.attemptNumber
+          )
+        : 99999999
+
+    return reward + bias
   }
 
   reward(): number {
-    return this.winNumber / this.attemptNumber
+    return this.attemptNumber !== 0 ? this.winNumber / this.attemptNumber : 0.0
   }
 
   getBestChildNode(): GameNode {
@@ -84,6 +117,10 @@ export class GameNode {
       (s, t) => (s.reward() > t.reward() ? s : t),
       this.children[0]
     )
+  }
+
+  getChildNodeByIndex(state: GameState): GameNode | undefined {
+    return this.children.find((node) => node.state === state)
   }
 
   getState(): GameState {

@@ -44,23 +44,24 @@ export function createApply(
   }
 }
 
+export const diffs: BoardIndex[] = [
+  [1, 0],
+  [0, 1],
+  [1, 1],
+  [1, -1],
+]
+
 export const createApplyLine = curry(
   (diff: BoardIndex, state: GameState, index: BoardIndex): void => {
-    const diffs: BoardIndex[] = [
+    ;([
       [diff[0], diff[1]],
       [-1 * diff[0], -1 * diff[1]],
-    ]
-
-    diffs.forEach((diff) => {
+    ] as BoardIndex[]).forEach((diff) => {
       if (createCheckPuttable(diff)(state, index))
         createApply(diff)(state, index)
     })
   }
 )
-
-export const applyVertical = createApplyLine([1, 0])
-export const applyHorizontal = createApplyLine([0, 1])
-export const applyDiagonal = createApplyLine([1, 1])
 
 export const apply = curry(
   (state: GameState, index: BoardIndex): GameState => {
@@ -68,9 +69,8 @@ export const apply = curry(
       boardState: [...state.boardState.map((line) => [...line])],
       nextPlayer: state.nextPlayer,
     }
-    applyVertical(nextState, index)
-    applyHorizontal(nextState, index)
-    applyDiagonal(nextState, index)
+
+    diffs.forEach((diff) => createApplyLine(diff)(nextState, index))
 
     // 手番が入れ替わる
     nextState.nextPlayer = state.nextPlayer === "ai" ? "opponent" : "ai"
