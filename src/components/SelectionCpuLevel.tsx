@@ -1,12 +1,12 @@
 import { useState } from "react"
 
-type Level = "強い" | "普通" | "弱い"
+import type { AILevel } from "types"
 
 export const SelectionCpuLevel: React.FC = () => {
-  const [level, setLevel] = useState<Level>("強い")
+  const [level, setLevel] = useState<AILevel>("強い")
 
   const handleLevelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLevel(e.target.value as Level)
+    setLevel(e.target.value as AILevel)
   }
   return (
     <div>
