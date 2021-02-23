@@ -44,14 +44,19 @@ export function createApply(
   }
 }
 
+export const diffs: BoardIndex[] = [
+  [1, 0],
+  [0, 1],
+  [1, 1],
+  [1, -1],
+]
+
 export const createApplyLine = curry(
   (diff: BoardIndex, state: GameState, index: BoardIndex): void => {
-    const diffs: BoardIndex[] = [
+    ;([
       [diff[0], diff[1]],
       [-1 * diff[0], -1 * diff[1]],
-    ]
-
-    diffs.forEach((diff) => {
+    ] as BoardIndex[]).forEach((diff) => {
       if (createCheckPuttable(diff)(state, index))
         createApply(diff)(state, index)
     })
@@ -64,13 +69,6 @@ export const apply = curry(
       boardState: [...state.boardState.map((line) => [...line])],
       nextPlayer: state.nextPlayer,
     }
-
-    const diffs: BoardIndex[] = [
-      [1, 0],
-      [0, 1],
-      [1, 1],
-      [1, -1],
-    ]
 
     diffs.forEach((diff) => createApplyLine(diff)(nextState, index))
 

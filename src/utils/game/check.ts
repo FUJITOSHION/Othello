@@ -2,6 +2,7 @@ import { curry } from "ramda"
 
 import type { GameState, BoardIndex, CellState } from "types"
 import { getCellState } from "./board-index"
+import { diffs } from "./simulate"
 
 export function isValidIndex(index: BoardIndex): boolean {
   return index[0] >= 0 && index[1] >= 0 && index[0] <= 9 && index[0] <= 9
@@ -44,11 +45,10 @@ export function createCheckPuttable(
 
 export const createCheckLinePuttable = curry(
   (diff: BoardIndex, state: GameState, index: BoardIndex) => {
-    const diffs: BoardIndex[] = [
+    return ([
       [diff[0], diff[1]],
       [-1 * diff[0], -1 * diff[1]],
-    ]
-    return diffs.reduce(
+    ] as BoardIndex[]).reduce(
       (s, t) => s || createCheckPuttable(t)(state, index),
       false
     )
@@ -57,13 +57,6 @@ export const createCheckLinePuttable = curry(
 
 export const checkPuttable = curry(
   (state: GameState, index: BoardIndex): boolean => {
-    const diffs: BoardIndex[] = [
-      [1, 0],
-      [0, 1],
-      [1, 1],
-      [1, -1],
-    ]
-
     return diffs.reduce(
       (s, t: BoardIndex) => s || createCheckLinePuttable(t)(state, index),
       false
