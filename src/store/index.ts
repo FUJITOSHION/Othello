@@ -1,19 +1,50 @@
-import { combineReducers } from "redux"
-import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit"
+import { combineReducers, applyMiddleware, Dispatch, AnyAction } from "redux"
+import { getDefaultMiddleware } from "@reduxjs/toolkit"
 import logger from "redux-logger"
+import { composeWithDevTools } from "redux-devtools-extension"
+import { createStore } from "redux"
+import { persistStore, persistReducer } from "redux-persist"
+import storage from "redux-persist/lib/storage"
 
-const rootReducer = combineReducers({})
+import gameConfigSlice, {
+  initialState as gameConfigState,
+} from "./game-config/slice"
+
+export const rootReducer = combineReducers({
+  gameConfig: gameConfigSlice.reducer,
+})
 export type RootState = ReturnType<typeof rootReducer>
 
 const preloadedState = (): RootState => {
-  return {}
+  return {
+    gameConfig: gameConfigState,
+  }
 }
 
-export const store = configureStore({
-  reducer: rootReducer,
-  middleware: [...getDefaultMiddleware(), logger],
-  devTools: process.env.NODE_ENV !== "production",
-  preloadedState: preloadedState(),
-})
+const persistedReducer = persistReducer(
+  {
+    key: "root",
+    storage,
+  },
+  rootReducer
+)
 
-export type AppDispatch = typeof store.dispatch
+// eslint-disable-next-line
+export const configureStore = () => {
+  const middlewares = [...getDefaultMiddleware(), logger]
+  const composedEnhancers = composeWithDevTools(
+    ...[applyMiddleware(...middlewares)]
+  )
+
+  const store = createStore(
+    persistedReducer,
+    preloadedState(),
+    composedEnhancers
+  )
+  const persistor = persistStore(store)
+
+  return { store, persistor }
+}
+
+export type ConfigureStore = ReturnType<typeof configureStore>
+export type AppDispatch = Dispatch<AnyAction>

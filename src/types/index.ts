@@ -13,3 +13,5 @@ export type GameState = {
   boardState: CellState[][]
   nextPlayer: Player
 }
+
+export type AILevel = "強い" | "普通" | "弱い"
