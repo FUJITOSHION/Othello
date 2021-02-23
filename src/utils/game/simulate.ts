@@ -1,6 +1,6 @@
 import { curry } from "ramda"
 
-import type { GameState, BoardIndex, CellState } from "types"
+import type { GameState, BoardIndex, CellState, Player, Score } from "types"
 import { getCellState } from "./board-index"
 import { createCheckPuttable } from "./check"
 
@@ -78,3 +78,74 @@ export const apply = curry(
     return nextState
   }
 )
+
+const createCounter = (player: Player) => {
+  return (state: GameState): number => {
+    return state.boardState.reduce(
+      (s, line) => s + line.filter((cell) => cell === player).length,
+      0
+    )
+  }
+}
+
+export const aiCounter = createCounter("ai")
+export const opponentCounter = createCounter("opponent")
+const maxCount = 100
+
+type ResCheckFin = {
+  isFin: boolean
+  winner: Player | undefined // 終了してないとき or 引き分け時は undefined
+  score: Score
+}
+
+export const checkFin = (state: GameState): ResCheckFin => {
+  // 完全勝利/敗北判定
+  const isWinOpponent = state.boardState.reduce(
+    (s, line) =>
+      s && line.reduce((lineSum, cell) => lineSum && cell !== "ai", true),
+    true
+  )
+  if (isWinOpponent)
+    return {
+      isFin: true,
+      winner: "opponent",
+      score: {
+        opponent: maxCount,
+        ai: 0,
+      },
+    }
+
+  const isWinAi = state.boardState.reduce(
+    (s, line) =>
+      s && line.reduce((lineSum, cell) => lineSum && cell !== "opponent", true),
+    true
+  )
+  if (isWinAi)
+    return {
+      isFin: true,
+      winner: "ai",
+      score: {
+        opponent: 0,
+        ai: maxCount,
+      },
+    }
+
+  // 盤面が全て埋まって終了判定
+  const aiCount = aiCounter(state)
+  const opponentCount = opponentCounter(state)
+  const isFin = aiCount + opponentCount === maxCount
+
+  return {
+    isFin: isFin,
+    winner:
+      isFin || aiCount === opponentCount
+        ? aiCount > opponentCount
+          ? "ai"
+          : "opponent"
+        : undefined,
+    score: {
+      ai: aiCount,
+      opponent: opponentCount,
+    },
+  }
+}

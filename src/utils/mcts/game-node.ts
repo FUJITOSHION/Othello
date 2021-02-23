@@ -1,7 +1,8 @@
 import type { GameState } from "types"
 import type { MctsConfig } from "./types"
 import { validIndexes } from "@utils/game/board-index"
-import { apply } from "@utils/game/simulate"
+import { apply, checkFin } from "@utils/game/simulate"
+import { getRandomInt } from "@utils/random"
 
 export class GameNode {
   private attemptNumber: number
@@ -40,6 +41,22 @@ export class GameNode {
         .map((index) => apply(this.state, index))
         .map((state) => new GameNode(state))
     }
+  }
+
+  simulate(): boolean {
+    let currentState: GameState = this.state
+    let checkResult = checkFin(currentState)
+
+    while (!checkResult.isFin) {
+      const validMoves = validIndexes(this.state)
+        .map((index) => apply(this.state, index))
+        .map((state) => new GameNode(state))
+
+      currentState = validMoves[getRandomInt(0, validMoves.length - 1)].state
+      checkResult = checkFin(currentState)
+    }
+
+    return checkResult.winner === "ai"
   }
 
   reflectResult(isWin: boolean): void {
