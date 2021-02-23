@@ -5,7 +5,7 @@
     "lib": ["dom", "esnext"],
     "baseUrl": "./src",
     "paths": {
-      "@path": ["lib/$path.ts"],
+      "@path": ["utils/$path.ts"],
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
       "@pages/*": ["pages/*"],
