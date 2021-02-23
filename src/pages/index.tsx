@@ -1,8 +1,10 @@
 import Head from "next/head"
 import { useState } from "react"
+import Link from "next/link"
 
 import styles from "@styles/modules/Home.module.scss"
 import { SelectionCpuLevel } from "../components/SelectionCpuLevel"
+import { pagesPath } from "@path"
 
 export default function Home(): JSX.Element {
   const [kagawa, setKagawa] = useState<boolean>(false)
@@ -15,6 +17,7 @@ export default function Home(): JSX.Element {
   const handleIsAgreeCpu = () => {
     setIsAgreeCpu(!isAgreeCpu)
   }
+
   return (
     <div>
       <Head>
@@ -41,7 +44,9 @@ export default function Home(): JSX.Element {
         </li>
       </ul>
       <SelectionCpuLevel />
-      <button disabled={!(kagawa && isAgreeCpu)}>ゲームを開始する</button>
+      <Link href={pagesPath.game.$url()}>
+        <button disabled={!(kagawa && isAgreeCpu)}>ゲームを開始する</button>
+      </Link>
     </div>
   )
 }
