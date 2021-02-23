@@ -1,5 +1,4 @@
 import { CellState } from "../types/index"
-import { useState } from "react"
 
 type Props = {
   state: CellState
