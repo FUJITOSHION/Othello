@@ -7,7 +7,7 @@ export function isValidIndex(index: BoardIndex): boolean {
   return index[0] >= 0 && index[1] >= 0 && index[0] <= 9 && index[0] <= 9
 }
 
-export function createCheckCellPuttable(
+export function createCheckPuttable(
   diffIndex: BoardIndex
 ): (state: GameState, index: BoardIndex, player: Player) => boolean {
   const getNextIndex = (index: BoardIndex): BoardIndex => {
@@ -44,7 +44,7 @@ export const createCheckLinePuttable = curry(
       [-1 * diff[0], -1 * diff[1]],
     ]
     return diffs.reduce(
-      (s, t) => s || createCheckCellPuttable(t)(state, index, player),
+      (s, t) => s || createCheckPuttable(t)(state, index, player),
       false
     )
   }
