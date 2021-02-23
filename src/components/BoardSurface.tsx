@@ -5,8 +5,8 @@ import { validIndexes } from "../utils/game/board-index"
 
 export const BoardSurface: React.FC = () => {
   const isAiWhite = true
-  const cells: CellState[][] = range(0, 10).map((i) =>
-    range(0, 10).map((j) => undefined)
+  const cells: CellState[][] = range(0, 10).map(() =>
+    range(0, 10).map(() => undefined)
   )
   if (isAiWhite) {
     cells[4][4] = "ai"
