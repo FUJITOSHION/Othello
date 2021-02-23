@@ -10,6 +10,7 @@ export const SelectionCpuLevel: React.FC = () => {
   const handleLevelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(gameConfigSlice.actions.setAiLevel(e.target.value as AILevel))
   }
+
   return (
     <div>
       <span>CPUの強さを選んでください</span>

@@ -15,6 +15,8 @@ export function createCheckPuttable(
   }
 
   return (state: GameState, index: BoardIndex): boolean => {
+    if (typeof getCellState(state, index) !== "undefined") return false
+
     let currentIndex: BoardIndex = getNextIndex(index)
     let currentState: CellState = getCellState(state, currentIndex)
 
@@ -53,16 +55,18 @@ export const createCheckLinePuttable = curry(
   }
 )
 
-export const checkPuttableVertical = createCheckLinePuttable([1, 0])
-export const checkPuttableHorizontal = createCheckLinePuttable([0, 1])
-export const checkPuttableDiagonal = createCheckLinePuttable([1, 1])
-
 export const checkPuttable = curry(
   (state: GameState, index: BoardIndex): boolean => {
-    return (
-      checkPuttableVertical(state, index) ||
-      checkPuttableHorizontal(state, index) ||
-      checkPuttableDiagonal(state, index)
+    const diffs: BoardIndex[] = [
+      [1, 0],
+      [0, 1],
+      [1, 1],
+      [1, -1],
+    ]
+
+    return diffs.reduce(
+      (s, t: BoardIndex) => s || createCheckLinePuttable(t)(state, index),
+      false
     )
   }
 )

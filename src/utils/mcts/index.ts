@@ -1,27 +1,38 @@
 import { range } from "ramda"
 
-import { GameState } from "types"
+import type { GameState } from "types"
 import type { MctsConfig } from "./types"
-import type { GameTree } from "./game-tree"
-import type { GameNode } from "./game-node"
+import { GameTree } from "./game-tree"
+import { GameNode } from "./game-node"
 
 export class MCTS {
   private config: MctsConfig
   private tree: GameTree
   private selectedNodeList: GameNode[]
 
-  constructor(config: MctsConfig, tree: GameTree) {
+  constructor(config: MctsConfig, state: GameState) {
     this.config = config
-    this.tree = tree
+    const rootNode = new GameNode(state, true)
+    this.tree = new GameTree(rootNode)
     this.selectedNodeList = []
   }
 
   // === For Outside ===
-  getNextState(): GameState {
+  getNextStateFirst(callback: (state: GameState) => void): void {
+    this.run(callback)
+  }
+
+  getNextState(state: GameState, callback: (state: GameState) => void): void {
     // AIの行動を反映した盤面を返却
+    this.tree.applyOpponentNode(state)
+    this.run(callback)
+  }
+
+  run(callback: (state: GameState) => void): void {
     this.runSteps()
+    console.log("学習終了", this.tree.getRootNode())
     this.tree.updateRootNode()
-    return this.tree.getRootNode().getState()
+    callback(this.tree.getRootNode().getState())
   }
 
   updateConfig(config: MctsConfig): void {
@@ -40,12 +51,15 @@ export class MCTS {
 
   select(): void {
     // 根ノードから葉ノードまで選択
-    let nextNode = this.tree.getRootNode()
-    this.selectedNodeList = []
+    let currentNode = this.tree.getRootNode()
+    this.selectedNodeList = [currentNode]
 
-    while (nextNode.isLeaf()) {
-      this.selectedNodeList.push(nextNode)
-      nextNode = nextNode.select(this.config)
+    currentNode = currentNode.select(this.config)
+    this.selectedNodeList.push(currentNode)
+
+    while (!currentNode.isLeaf()) {
+      currentNode = currentNode.select(this.config)
+      this.selectedNodeList.push(currentNode)
     }
   }
 
@@ -56,7 +70,8 @@ export class MCTS {
 
   simulate(): boolean {
     // シミュレーション結果
-    return this.getSelectedLeafNode().simulate()
+    const isWin = this.getSelectedLeafNode().simulate()
+    return isWin
   }
 
   backPropagate(isWin: boolean): void {

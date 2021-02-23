@@ -58,19 +58,21 @@ export const createApplyLine = curry(
   }
 )
 
-export const applyVertical = createApplyLine([1, 0])
-export const applyHorizontal = createApplyLine([0, 1])
-export const applyDiagonal = createApplyLine([1, 1])
-
 export const apply = curry(
   (state: GameState, index: BoardIndex): GameState => {
     const nextState: GameState = {
       boardState: [...state.boardState.map((line) => [...line])],
       nextPlayer: state.nextPlayer,
     }
-    applyVertical(nextState, index)
-    applyHorizontal(nextState, index)
-    applyDiagonal(nextState, index)
+
+    const diffs: BoardIndex[] = [
+      [1, 0],
+      [0, 1],
+      [1, 1],
+      [1, -1],
+    ]
+
+    diffs.forEach((diff) => createApplyLine(diff)(nextState, index))
 
     // 手番が入れ替わる
     nextState.nextPlayer = state.nextPlayer === "ai" ? "opponent" : "ai"

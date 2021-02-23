@@ -1,0 +1,22 @@
+.cell {
+  height: 50px;
+  width: 50px;
+  border: medium solid #000;
+  background-color: #336f33;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.white {
+  color: #fafafa;
+}
+
+.black {
+  color: #000;
+}
+
+.puttable {
+  background-color: blue;
+}

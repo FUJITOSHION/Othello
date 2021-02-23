@@ -1,32 +1,27 @@
 import { CellState } from "../types/index"
 
+import styles from "@styles/modules/Cell.module.scss"
+import { useIsAiWhite } from "@hooks/store/game-config"
+
 type Props = {
   state: CellState
   isValid: boolean
   onClick: () => void
 }
 
-// type CellDisplayType = "白" | "黒" | undefined
-
 export const Cell: React.FC<Props> = ({ state, isValid, onClick }: Props) => {
-  // ここのisAIWhiteをglobalでもつ
-  const isAIWhite = true
+  const isAIWhite = useIsAiWhite()
 
   return (
     <div
-      style={{
-        border: "medium solid #000000",
-        backgroundColor: "#336f33",
-        color: isValid ? "#FFFFFF" : "#000000",
-        cursor: isValid ? "pointer" : undefined,
-      }}
+      className={`${styles.cell} ${
+        (state === "ai" && isAIWhite) || (state === "opponent" && !isAIWhite)
+          ? styles.white
+          : styles.black
+      } ${isValid ? styles.puttable : ""}`}
       onClick={isValid ? onClick : undefined}
     >
-      {typeof state === "string"
-        ? (state === "ai" && isAIWhite) || (state === "opponent" && !isAIWhite)
-          ? "白"
-          : "黒"
-        : "他"}
+      {typeof state === "string" ? "●" : ""}
     </div>
   )
 }
