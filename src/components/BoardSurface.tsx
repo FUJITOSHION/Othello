@@ -4,6 +4,7 @@ import { range, includes } from "ramda"
 import { validIndexes } from "../utils/game/board-index"
 import { apply } from "../utils/game/simulate"
 import { useState } from "react"
+import { CalcGameTime } from "./CalcGameTime"
 
 export const BoardSurface: React.FC = () => {
   const isAiWhite = true
@@ -53,7 +54,7 @@ export const BoardSurface: React.FC = () => {
           ))}
         </div>
       ))}
-      <p>hello</p>
+      <CalcGameTime />
     </div>
   )
 }
