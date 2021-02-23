@@ -1,5 +1,5 @@
 import type { GameState } from "types"
-import { MctsConfig } from "./types"
+import type { MctsConfig } from "./types"
 
 export class GameNode {
   private attemptNumber: number

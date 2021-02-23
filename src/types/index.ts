@@ -4,4 +4,5 @@ export type BoardIndex = [number, number]
 
 export type GameState = {
   boardState: CellState[][]
+  nextPlayer: Player
 }

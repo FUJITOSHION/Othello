@@ -1,4 +1,4 @@
-import { CellState } from "../../../src/types/index"
+import { CellState, GameState } from "../../../src/types/index"
 import {
   validIndexes,
   createAllIndexes,
@@ -19,7 +19,7 @@ const initState: CellState[][] = [
   [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
 ]
 
-const initBoard = { boardState: initState }
+const initBoard: GameState = { boardState: initState, nextPlayer: "ai" }
 
 test(`createAllIndexes`, () => {
   const allIndexes = createAllIndexes()
@@ -29,7 +29,7 @@ test(`createAllIndexes`, () => {
 })
 
 test(`validIndexes`, () => {
-  expect(validIndexes(initBoard, "ai")).toEqual([
+  expect(validIndexes(initBoard)).toEqual([
     [3, 5],
     [4, 6],
     [5, 3],

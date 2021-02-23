@@ -1,6 +1,6 @@
 import { range, curry } from "ramda"
 
-import type { GameState, BoardIndex, CellState, Player } from "types"
+import type { GameState, BoardIndex, CellState } from "types"
 import { checkPuttable, isValidIndex } from "./check"
 
 export function createAllIndexes(): BoardIndex[] {
@@ -9,10 +9,8 @@ export function createAllIndexes(): BoardIndex[] {
   )
 }
 
-export function validIndexes(state: GameState, player: Player): BoardIndex[] {
-  return createAllIndexes().filter((index) =>
-    checkPuttable(state, index, player)
-  )
+export function validIndexes(state: GameState): BoardIndex[] {
+  return createAllIndexes().filter((index) => checkPuttable(state, index))
 }
 
 export const getCellState = curry(

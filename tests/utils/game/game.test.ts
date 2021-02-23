@@ -1,4 +1,4 @@
-import { CellState } from "../../../src/types/index"
+import { CellState, GameState } from "../../../src/types/index"
 import {
   isValidIndex,
   checkPuttableVertical,
@@ -27,11 +27,11 @@ const initState: CellState[][] = [
   [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
 ]
 
-const initBoard = { boardState: initState }
+const initBoard: GameState = { boardState: initState, nextPlayer: "ai" }
 
 test(`checkPuttableVertical`, () => {
-  expect(checkPuttableVertical(initBoard, [6, 4], "ai")).toBe(true)
-  expect(checkPuttableVertical(initBoard, [3, 5], "ai")).toBe(true)
-  expect(checkPuttableVertical(initBoard, [3, 4], "ai")).toBe(false)
-  expect(checkPuttableVertical(initBoard, [6, 5], "ai")).toBe(false)
+  expect(checkPuttableVertical(initBoard, [6, 4])).toBe(true)
+  expect(checkPuttableVertical(initBoard, [3, 5])).toBe(true)
+  expect(checkPuttableVertical(initBoard, [3, 4])).toBe(false)
+  expect(checkPuttableVertical(initBoard, [6, 5])).toBe(false)
 })

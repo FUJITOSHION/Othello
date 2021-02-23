@@ -1,20 +1,20 @@
 import { curry } from "ramda"
 
-import type { GameState, BoardIndex, CellState, Player } from "types"
+import type { GameState, BoardIndex, CellState } from "types"
 import { getCellState } from "./board-index"
 import { createCheckPuttable } from "./check"
 
 export function createApply(
   diffIndex: BoardIndex
-): (state: GameState, index: BoardIndex, player: Player) => void {
+): (state: GameState, index: BoardIndex) => void {
   const getNextIndex = (index: BoardIndex): BoardIndex => {
     return [index[0] + diffIndex[0], index[1] + diffIndex[1]]
   }
 
   const puttable = createCheckPuttable(diffIndex)
 
-  return (state: GameState, index: BoardIndex, player: Player): void => {
-    if (!puttable(state, index, player)) {
+  return (state: GameState, index: BoardIndex): void => {
+    if (!puttable(state, index)) {
       return
     }
 
@@ -23,7 +23,7 @@ export function createApply(
 
     // 現在セルを上書きする関数
     const put = () => {
-      state.boardState[currentIndex[0]][currentIndex[1]] = player
+      state.boardState[currentIndex[0]][currentIndex[1]] = state.nextPlayer
     }
 
     put()
@@ -33,7 +33,7 @@ export function createApply(
     put()
 
     while (typeof currentState !== "undefined") {
-      if (currentState === player) {
+      if (currentState === state.nextPlayer) {
         return
       }
 
@@ -45,20 +45,15 @@ export function createApply(
 }
 
 export const createApplyLine = curry(
-  (
-    diff: BoardIndex,
-    state: GameState,
-    index: BoardIndex,
-    player: Player
-  ): void => {
+  (diff: BoardIndex, state: GameState, index: BoardIndex): void => {
     const diffs: BoardIndex[] = [
       [diff[0], diff[1]],
       [-1 * diff[0], -1 * diff[1]],
     ]
 
     diffs.forEach((diff) => {
-      if (createCheckPuttable(diff)(state, index, player))
-        createApply(diff)(state, index, player)
+      if (createCheckPuttable(diff)(state, index))
+        createApply(diff)(state, index)
     })
   }
 )
@@ -68,13 +63,17 @@ export const applyHorizontal = createApplyLine([0, 1])
 export const applyDiagonal = createApplyLine([1, 1])
 
 export const apply = curry(
-  (state: GameState, index: BoardIndex, player: Player): GameState => {
+  (state: GameState, index: BoardIndex): GameState => {
     const nextState: GameState = {
       boardState: [...state.boardState.map((line) => [...line])],
+      nextPlayer: state.nextPlayer,
     }
-    applyVertical(nextState, index, player)
-    applyHorizontal(nextState, index, player)
-    applyDiagonal(nextState, index, player)
+    applyVertical(nextState, index)
+    applyHorizontal(nextState, index)
+    applyDiagonal(nextState, index)
+
+    // 手番が入れ替わる
+    nextState.nextPlayer = state.nextPlayer === "ai" ? "opponent" : "ai"
 
     return nextState
   }

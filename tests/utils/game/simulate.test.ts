@@ -1,4 +1,4 @@
-import { CellState } from "../../../src/types/index"
+import { CellState, GameState } from "../../../src/types/index"
 import { apply } from "../../../src/utils/game/simulate"
 
 test(`checkPuttableVertical`, () => {
@@ -31,7 +31,10 @@ test(`checkPuttableVertical`, () => {
     [undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
   ]
 
-  expect(apply({ boardState: initState }, [6, 4], "ai")).toEqual({
+  expect(
+    apply({ boardState: initState, nextPlayer: "ai" } as GameState, [6, 4])
+  ).toEqual({
     boardState: nextState,
+    nextPlayer: "opponent",
   })
 })
