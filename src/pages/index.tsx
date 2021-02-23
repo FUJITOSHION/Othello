@@ -3,7 +3,8 @@ import { useState } from "react"
 import Link from "next/link"
 
 import styles from "@styles/modules/Home.module.scss"
-import { SelectionCpuLevel } from "../components/SelectionCpuLevel"
+import { ApplyLocalStorage } from "@components/apply-local-storage"
+import { SelectionCpuLevel } from "@components/SelectionCpuLevel"
 import { pagesPath } from "@path"
 
 export default function Home(): JSX.Element {
@@ -43,7 +44,9 @@ export default function Home(): JSX.Element {
           </label>
         </li>
       </ul>
-      <SelectionCpuLevel />
+      <ApplyLocalStorage>
+        <SelectionCpuLevel />
+      </ApplyLocalStorage>
       <Link href={pagesPath.game.$url()}>
         <button disabled={!(kagawa && isAgreeCpu)}>ゲームを開始する</button>
       </Link>

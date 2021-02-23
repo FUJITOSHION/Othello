@@ -17,16 +17,10 @@ const gameConfigSlice = createSlice({
   initialState,
   reducers: {
     setAiLevel: (state, { payload }: PayloadAction<AILevel>) => {
-      state = {
-        ...state,
-        aiLevel: payload,
-      }
+      state.aiLevel = payload
     },
     setAiIsWhite: (state, { payload }: PayloadAction<boolean>) => {
-      state = {
-        ...state,
-        isAiWhite: payload,
-      }
+      state.isAiWhite = payload
     },
   },
 })
