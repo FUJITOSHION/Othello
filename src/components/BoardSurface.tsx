@@ -8,21 +8,21 @@ import { useState } from "react"
 export const BoardSurface: React.FC = () => {
   const isAiWhite = true
 
-  const cells: CellState[][] = range(0, 10).map(() =>
+  const initCells: CellState[][] = range(0, 10).map(() =>
     range(0, 10).map(() => undefined)
   )
   if (isAiWhite) {
-    cells[4][4] = "ai"
-    cells[4][5] = "opponent"
-    cells[5][5] = "ai"
-    cells[5][4] = "opponent"
+    initCells[4][4] = "ai"
+    initCells[4][5] = "opponent"
+    initCells[5][5] = "ai"
+    initCells[5][4] = "opponent"
   } else {
-    cells[4][4] = "opponent"
-    cells[4][5] = "ai"
-    cells[5][5] = "opponent"
-    cells[5][4] = "ai"
+    initCells[4][4] = "opponent"
+    initCells[4][5] = "ai"
+    initCells[5][5] = "opponent"
+    initCells[5][4] = "ai"
   }
-  const [updateCells, setUpdateCells] = useState<CellState[][]>(cells)
+  const [cells, setCells] = useState<CellState[][]>(initCells)
   return (
     <div
       style={{
@@ -30,14 +30,14 @@ export const BoardSurface: React.FC = () => {
         flexDirection: "column",
       }}
     >
-      {updateCells.map((line, i) => (
+      {cells.map((line, i) => (
         <div style={{ display: "flex", flexDirection: "row" }} key={i}>
           {line.map((cell, j) => (
             <Cell
               state={cell}
               key={j}
               onClick={() =>
-                setUpdateCells(
+                setCells(
                   apply({ boardState: cells, nextPlayer: "opponent" }, [i, j])
                     .boardState
                 )
@@ -45,7 +45,7 @@ export const BoardSurface: React.FC = () => {
               isValid={includes(
                 [i, j],
                 validIndexes({
-                  boardState: updateCells,
+                  boardState: cells,
                   nextPlayer: "opponent",
                 })
               )}
