@@ -4,7 +4,6 @@ import { GameState } from "types"
 import type { MctsConfig } from "./types"
 import type { GameTree } from "./game-tree"
 import type { GameNode } from "./game-node"
-import { getRandomInt } from "@utils/random"
 
 export class MCTS {
   private config: MctsConfig
@@ -52,18 +51,22 @@ export class MCTS {
 
   expand(): void {
     // 葉ノードを拡張
-    this.selectedNodeList[this.selectedNodeList.length - 1].expand(this.config)
+    this.getSelectedLeafNode().expand(this.config)
   }
 
   simulate(): boolean {
     // シミュレーション結果
-    // 仮実装: 50%の確率で勝利判定
-    return getRandomInt(0, 100) > 50
+    return this.getSelectedLeafNode().simulate()
   }
 
   backPropagate(isWin: boolean): void {
     this.selectedNodeList.forEach((node) => {
       node.reflectResult(isWin)
     })
+  }
+
+  // === Util ===
+  getSelectedLeafNode(): GameNode {
+    return this.selectedNodeList[this.selectedNodeList.length - 1]
   }
 }
