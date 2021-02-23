@@ -1,5 +1,7 @@
 import type { GameState } from "types"
 import type { MctsConfig } from "./types"
+import { validIndexes } from "@utils/game/board-index"
+import { apply } from "@utils/game/simulate"
 
 export class GameNode {
   private attemptNumber: number
@@ -30,10 +32,13 @@ export class GameNode {
   }
 
   expand(config: MctsConfig): void {
-    if (this.attemptNumber > config.expandThreshold) {
+    if (this.isLeaf() && this.attemptNumber > config.expandThreshold) {
       // 試行数 > 敷地値のとき、拡張する
       // 有効な子ノード(次に取りうる選択肢すべて)を生成する
-      throw Error("未実装")
+
+      this.children = validIndexes(this.state)
+        .map((index) => apply(this.state, index))
+        .map((state) => new GameNode(state))
     }
   }
 
@@ -57,10 +62,14 @@ export class GameNode {
     return this.winNumber / this.attemptNumber
   }
 
-  getBestNode(): GameNode {
+  getBestChildNode(): GameNode {
     return this.children.reduce(
       (s, t) => (s.reward() > t.reward() ? s : t),
       this.children[0]
     )
+  }
+
+  getState(): GameState {
+    return this.state
   }
 }

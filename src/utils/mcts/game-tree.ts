@@ -10,4 +10,8 @@ export class GameTree {
   getRootNode(): GameNode {
     return this.rootNode
   }
+
+  updateRootNode(): void {
+    this.rootNode = this.rootNode.getBestChildNode()
+  }
 }

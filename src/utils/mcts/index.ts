@@ -1,3 +1,6 @@
+import { range } from "ramda"
+
+import { GameState } from "types"
 import type { MctsConfig } from "./types"
 import type { GameTree } from "./game-tree"
 import type { GameNode } from "./game-node"
@@ -15,9 +18,11 @@ export class MCTS {
   }
 
   // === For Outside ===
-  getNextTarget(): [number, number] | undefined {
-    // 次回のこちらの行動 (RETURN: 置く場所の添字 or 行動不可)
-    throw Error("未実装")
+  getNextState(): GameState {
+    // AIの行動を反映した盤面を返却
+    this.runSteps()
+    this.tree.updateRootNode()
+    return this.tree.getRootNode().getState()
   }
 
   updateConfig(config: MctsConfig): void {
@@ -25,6 +30,15 @@ export class MCTS {
   }
 
   // === MCTS core steps ===
+  runSteps(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    for (const _ of range(1, this.config.stepNumber)) {
+      this.select()
+      this.expand()
+      this.backPropagate(this.simulate())
+    }
+  }
+
   select(): void {
     // 根ノードから葉ノードまで選択
     let nextNode = this.tree.getRootNode()
@@ -38,8 +52,7 @@ export class MCTS {
 
   expand(): void {
     // 葉ノードを拡張
-    const leafNode = this.selectedNodeList[this.selectedNodeList.length - 1]
-    leafNode.expand(this.config)
+    this.selectedNodeList[this.selectedNodeList.length - 1].expand(this.config)
   }
 
   simulate(): boolean {
