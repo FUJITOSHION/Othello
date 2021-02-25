@@ -1,4 +1,5 @@
-import { useEffect } from "react"
+import { useEffect, memo } from "react"
+import dayjs from "dayjs"
 
 import type { BoardIndex, CellState, GameState } from "types"
 import { Cell } from "./Cell"
@@ -9,7 +10,13 @@ import { useState } from "react"
 import { MCTS } from "@utils/mcts"
 import { CalcGameTime } from "./CalcGameTime"
 
-export const BoardSurface: React.FC = () => {
+type BoardSurfaceProps = {
+  mcts: MCTS
+}
+
+const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
+  mcts,
+}: BoardSurfaceProps) => {
   const isAiWhite = true
 
   const initCells: CellState[][] = range(0, 10).map(() =>
@@ -26,80 +33,90 @@ export const BoardSurface: React.FC = () => {
     initCells[5][5] = "opponent"
     initCells[5][4] = "ai"
   }
+  const [isAiTurn, setIsAiTurn] = useState<boolean>(false)
+  const [aiStartTime, setAiStartTime] = useState<dayjs.Dayjs>(dayjs())
   const [cells, setCells] = useState<CellState[][]>(initCells)
   const [puttables, setPuttables] = useState<BoardIndex[]>([])
 
-  const config = {
-    expandThreshold: 10,
-    CP: 1 / Math.sqrt(2),
-    stepNumber: 30,
+  const callback = (state: GameState): void => {
+    console.log("AI終了")
+    const diff = dayjs().diff(aiStartTime)
+    const waitTime = diff > 4000 ? 0 : 4000 - diff
+
+    setTimeout(() => {
+      setIsAiTurn(false)
+      setCells(state.boardState)
+      const valids = validIndexes(state)
+      setPuttables(valids)
+
+      if (valids.length === 0 && mcts) {
+        console.log("AI待ち...")
+
+        mcts.getNextState(
+          {
+            boardState: state.boardState,
+            nextPlayer: "ai",
+          },
+          callback
+        )
+      }
+    }, waitTime)
   }
 
-  let Mcts: MCTS | undefined
-
   useEffect(() => {
-    setPuttables(
-      validIndexes({
-        boardState: cells,
-        nextPlayer: "opponent",
-      })
-    )
-  }, [])
+    if (isAiTurn) {
+      console.log("AI待ち...")
+      setAiStartTime(dayjs())
+      mcts.getNextState(
+        {
+          boardState: cells,
+          nextPlayer: "ai",
+        },
+        callback
+      )
+    } else {
+      setPuttables(
+        validIndexes({
+          boardState: cells,
+          nextPlayer: "opponent",
+        })
+      )
+    }
+  }, [cells])
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {cells.map((line, i) => (
-        <div style={{ display: "flex", flexDirection: "row" }} key={i}>
-          {line.map((cell, j) => (
-            <Cell
-              state={cell}
-              key={j}
-              onClick={() => {
-                const nextState = apply(
-                  { boardState: cells, nextPlayer: "opponent" },
-                  [i, j]
-                )
-                setCells(nextState.boardState)
-                setPuttables([])
-
-                console.log("AI待ち...")
-
-                const callback = (state: GameState): void => {
-                  console.log("AI終了")
-
-                  setCells(state.boardState)
-                  const valids = validIndexes(state)
-                  setPuttables(valids)
-
-                  if (valids.length === 0 && Mcts) {
-                    Mcts.getNextState(
-                      {
-                        boardState: state.boardState,
-                        nextPlayer: "ai",
-                      },
-                      callback
-                    )
-                  }
-                }
-
-                if (!Mcts) {
-                  Mcts = new MCTS(config, nextState)
-                  Mcts.getNextStateFirst(callback)
-                } else {
-                  Mcts.getNextState(nextState, callback)
-                }
-              }}
-              isValid={includes([i, j], puttables)}
-            />
-          ))}
-        </div>
-      ))}
+    <div>
+      <h1>{isAiTurn ? "AIのターン" : "あなたのターン"}</h1>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {cells.map((line, i) => (
+          <div style={{ display: "flex", flexDirection: "row" }} key={i}>
+            {line.map((cell, j) => (
+              <Cell
+                state={cell}
+                key={j}
+                onClick={async () => {
+                  const nextState = apply(
+                    { boardState: cells, nextPlayer: "opponent" },
+                    [i, j]
+                  )
+                  setIsAiTurn(true)
+                  setCells(nextState.boardState)
+                  setPuttables([])
+                }}
+                isValid={includes([i, j], puttables)}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
       <CalcGameTime />
     </div>
   )
 }
+
+export const BoardSurface = memo(BoardSurfaceComp)
