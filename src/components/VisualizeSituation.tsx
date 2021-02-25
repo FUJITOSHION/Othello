@@ -1,11 +1,11 @@
 import { aiCounter, opponentCounter } from "../utils/game/simulate"
 import { GameState } from "types"
 
-type PutStonesProps = {
+type VisualizeSituationProps = {
   state: GameState
 }
 
-const winUser = (ai: number, opponent: number): string => {
+const getGamestatus = (ai: number, opponent: number): string => {
   if (ai === opponent) {
     return "引き分けです"
   } else if (ai >= opponent) {
@@ -26,13 +26,13 @@ const displayStoneState = (state: GameState): string => {
     "AIは: " +
     numAi.toString() +
     "　現在" +
-    winUser(numAi, numOpponent)
+    getGamestatus(numAi, numOpponent)
   )
 }
 
-export const PutStones: React.FC<PutStonesProps> = ({
+export const VisualizeSituation: React.FC<VisualizeSituationProps> = ({
   state,
-}: PutStonesProps) => {
+}: VisualizeSituationProps) => {
   return (
     <div>
       <div>{displayStoneState(state)}</div>
