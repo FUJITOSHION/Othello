@@ -4,7 +4,7 @@ import fs from "fs"
 import type { JsonNode } from "types"
 import { MCTS } from "@utils/mcts"
 import { GameNode } from "@utils/mcts/game-node"
-import { ApplyLocalStorage } from "@components/apply-local-storage"
+import { ClientSideRender } from "@components/ClientSideRender"
 import { SelectionCpuLevel } from "../components/SelectionCpuLevel"
 import { BoardSurface } from "../components/BoardSurface"
 
@@ -26,10 +26,10 @@ const GamePage: React.FC<GamePageProps> = ({ initJson }: GamePageProps) => {
 
   return (
     <div>
-      <ApplyLocalStorage>
+      <ClientSideRender>
         <SelectionCpuLevel />
-        <BoardSurface mcts={mcts} />
-      </ApplyLocalStorage>
+      </ClientSideRender>
+      <BoardSurface mcts={mcts} />
     </div>
   )
 }
