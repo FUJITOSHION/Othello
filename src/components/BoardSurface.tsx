@@ -15,6 +15,8 @@ import { VisualizeSituation } from "./VisualizeSituation"
 import { RestartButton } from "./RestartButton"
 import { SelectionCpuLevel } from "./SelectionCpuLevel"
 
+const MIN_WAIT_TIME = 4000
+
 type BoardSurfaceProps = {
   mcts: MCTS
 }
@@ -47,7 +49,7 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
   const callback = (state: GameState): void => {
     console.log("AI終了")
     const diff = dayjs().diff(aiStartTime)
-    const waitTime = diff > 4000 ? 0 : 4000 - diff
+    const waitTime = diff > MIN_WAIT_TIME ? 0 : MIN_WAIT_TIME - diff
 
     setTimeout(() => {
       setIsAiTurn(false)
