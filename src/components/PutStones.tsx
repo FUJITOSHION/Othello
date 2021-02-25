@@ -5,13 +5,28 @@ type PutStonesProps = {
   state: GameState
 }
 
+const winUser = (ai: number, opponent: number): string => {
+  if (ai === opponent) {
+    return "引き分けです"
+  } else if (ai >= opponent) {
+    return "AIがかってます"
+  } else {
+    return "あなたがかってます"
+  }
+}
+
 const displayStoneState = (state: GameState): string => {
+  const numOpponent = opponentCounter(state)
+  const numAi = aiCounter(state)
+
   return (
     "あなたは: " +
-    opponentCounter(state).toString() +
+    numOpponent.toString() +
     " vs " +
     "AIは: " +
-    aiCounter(state).toString()
+    numAi.toString() +
+    "　現在" +
+    winUser(numAi, numOpponent)
   )
 }
 

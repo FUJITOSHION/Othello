@@ -9,6 +9,8 @@ import { useState } from "react"
 import { MCTS } from "@utils/mcts"
 import { CalcGameTime } from "./CalcGameTime"
 import { PutStones } from "./PutStones"
+import { RestartButton } from "./RestartButton"
+import { SelectionCpuLevel } from "./SelectionCpuLevel"
 
 export const BoardSurface: React.FC = () => {
   const isAiWhite = true
@@ -101,6 +103,9 @@ export const BoardSurface: React.FC = () => {
       ))}
       <CalcGameTime />
       <PutStones state={{ boardState: cells, nextPlayer: "opponent" }} />
+      <RestartButton />
+      <SelectionCpuLevel />
+      <a href="https://github.com/FUJITOSHION/Othello">github</a>
     </div>
   )
 }
