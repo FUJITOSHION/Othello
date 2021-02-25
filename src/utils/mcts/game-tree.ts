@@ -1,5 +1,5 @@
 import type { GameState } from "types"
-import type { GameNode } from "./game-node"
+import { GameNode } from "./game-node"
 
 export class GameTree {
   private rootNode: GameNode
@@ -16,10 +16,12 @@ export class GameTree {
     this.rootNode = this.rootNode.getBestChildNode()
   }
 
-  applyOpponentNode(state: GameState): GameNode {
+  applyOpponentNode(state: GameState): void {
     const nextNode = this.rootNode.getChildNodeByIndex(state)
 
     if (!nextNode) throw Error("その手は存在しません")
-    return nextNode
+    if (nextNode.isLeaf()) nextNode.setChildren()
+
+    this.rootNode = nextNode
   }
 }

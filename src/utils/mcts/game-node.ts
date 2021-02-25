@@ -1,4 +1,4 @@
-import type { GameState } from "types"
+import type { GameState, JsonNode } from "types"
 import type { MctsConfig } from "./types"
 import { validIndexes } from "@utils/game/board-index"
 import { apply, checkFin } from "@utils/game/simulate"
@@ -14,7 +14,8 @@ export class GameNode {
     this.attemptNumber = 0
     this.winNumber = 0
     this.state = state
-    this.children = isRoot ? this.possibleChildNodes() : []
+    this.children = []
+    if (isRoot) this.setChildren()
   }
 
   select(config: MctsConfig): GameNode {
@@ -90,6 +91,10 @@ export class GameNode {
         ]
   }
 
+  setChildren(): void {
+    this.children = this.possibleChildNodes()
+  }
+
   isLeaf(): boolean {
     return this.children.length === 0
   }
@@ -120,10 +125,38 @@ export class GameNode {
   }
 
   getChildNodeByIndex(state: GameState): GameNode | undefined {
-    return this.children.find((node) => node.state === state)
+    if (this.isLeaf()) this.setChildren()
+
+    return this.children.find((node) =>
+      node.state.boardState.reduce(
+        (s: boolean, line, i) =>
+          s &&
+          line.reduce(
+            (lineSum: boolean, value, j) =>
+              lineSum && state.boardState[i][j] === value,
+            true
+          ),
+        true
+      )
+    )
   }
 
   getState(): GameState {
     return this.state
+  }
+
+  static fromJson(jsonData: JsonNode): GameNode {
+    const state = {
+      boardState: jsonData.state.boardState.map((line) =>
+        line.map((value) => (value === null ? undefined : value))
+      ),
+      nextPlayer: jsonData.state.nextPlayer,
+    }
+
+    const node = new GameNode(state, false)
+    node.attemptNumber = jsonData.attemptNumber
+    node.winNumber = jsonData.winNumber
+    node.children = jsonData.children.map((node) => GameNode.fromJson(node))
+    return node
   }
 }
