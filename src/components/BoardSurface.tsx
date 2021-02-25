@@ -8,6 +8,7 @@ import { apply } from "../utils/game/simulate"
 import { useState } from "react"
 import { MCTS } from "@utils/mcts"
 import { CalcGameTime } from "./CalcGameTime"
+import { PutStones } from "./PutStones"
 
 export const BoardSurface: React.FC = () => {
   const isAiWhite = true
@@ -68,7 +69,6 @@ export const BoardSurface: React.FC = () => {
                 setPuttables([])
 
                 console.log("AI待ち...")
-
                 const callback = (state: GameState): void => {
                   console.log("AI終了")
 
@@ -100,6 +100,7 @@ export const BoardSurface: React.FC = () => {
         </div>
       ))}
       <CalcGameTime />
+      <PutStones state={{ boardState: cells, nextPlayer: "opponent" }} />
     </div>
   )
 }
