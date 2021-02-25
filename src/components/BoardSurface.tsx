@@ -9,6 +9,9 @@ import { apply } from "../utils/game/simulate"
 import { useState } from "react"
 import { MCTS } from "@utils/mcts"
 import { CalcGameTime } from "./CalcGameTime"
+import { VisualizeSituation } from "./VisualizeSituation"
+import { RestartButton } from "./RestartButton"
+import { SelectionCpuLevel } from "./SelectionCpuLevel"
 
 type BoardSurfaceProps = {
   mcts: MCTS
@@ -115,6 +118,12 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
         ))}
       </div>
       <CalcGameTime />
+      <VisualizeSituation
+        state={{ boardState: cells, nextPlayer: "opponent" }}
+      />
+      <RestartButton />
+      <SelectionCpuLevel />
+      <a href="https://github.com/FUJITOSHION/Othello">github</a>
     </div>
   )
 }
