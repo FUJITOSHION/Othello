@@ -15,3 +15,16 @@ export type GameState = {
 }
 
 export type AILevel = "強い" | "普通" | "弱い"
+
+// JSON
+export type JsonCellState = Exclude<CellState, undefined> | null
+export type JsonGameState = {
+  boardState: JsonCellState[][]
+  nextPlayer: Player
+}
+export type JsonNode = {
+  attemptNumber: number
+  winNumber: number
+  state: JsonGameState
+  children: JsonNode[]
+}

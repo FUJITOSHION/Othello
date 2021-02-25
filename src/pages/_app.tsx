@@ -2,13 +2,11 @@ import type { AppProps } from "next/app"
 import { Provider } from "react-redux"
 
 import "@styles/globals/index.scss"
-import { configureStore } from "@store"
-
-export const stores = configureStore()
+import { store } from "@store"
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
-    <Provider store={stores.store}>
+    <Provider store={store}>
       <Component {...pageProps} />
     </Provider>
   )

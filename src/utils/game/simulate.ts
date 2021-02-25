@@ -1,7 +1,7 @@
 import { curry } from "ramda"
 
 import type { GameState, BoardIndex, CellState, Player, Score } from "types"
-import { getCellState } from "./board-index"
+import { getCellState, validIndexes } from "./board-index"
 import { createCheckPuttable } from "./check"
 
 export function createApply(
@@ -130,15 +130,38 @@ export const checkFin = (state: GameState): ResCheckFin => {
       },
     }
 
-  // 盤面が全て埋まって終了判定
   const aiCount = aiCounter(state)
   const opponentCount = opponentCounter(state)
-  const isFin = aiCount + opponentCount === maxCount
 
+  // お互い置く場所がない
+  if (
+    validIndexes(state).length === 0 &&
+    validIndexes({
+      boardState: state.boardState,
+      nextPlayer: state.nextPlayer === "ai" ? "opponent" : "ai",
+    }).length === 0
+  ) {
+    return {
+      isFin: true,
+      winner:
+        aiCount !== opponentCount
+          ? aiCount > opponentCount
+            ? "ai"
+            : "opponent"
+          : undefined,
+      score: {
+        ai: aiCount,
+        opponent: opponentCount,
+      },
+    }
+  }
+
+  // 盤面が全て埋まって終了判定
+  const isFin = aiCount + opponentCount === maxCount
   return {
     isFin: isFin,
     winner:
-      isFin || aiCount === opponentCount
+      isFin && aiCount !== opponentCount
         ? aiCount > opponentCount
           ? "ai"
           : "opponent"

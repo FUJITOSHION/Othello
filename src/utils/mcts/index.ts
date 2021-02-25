@@ -1,18 +1,26 @@
 import { range } from "ramda"
 
-import type { GameState } from "types"
+import type { GameState, CellState, JsonNode } from "types"
 import type { MctsConfig } from "./types"
 import { GameTree } from "./game-tree"
 import { GameNode } from "./game-node"
 
 export class MCTS {
   private config: MctsConfig
-  private tree: GameTree
+  public tree: GameTree
   private selectedNodeList: GameNode[]
 
-  constructor(config: MctsConfig, state: GameState) {
+  constructor(config: MctsConfig, state?: GameState, node?: GameNode) {
     this.config = config
-    const rootNode = new GameNode(state, true)
+    let rootNode: GameNode
+    if (state !== undefined) {
+      rootNode = new GameNode(state, true)
+    } else if (node !== undefined) {
+      rootNode = node
+    } else {
+      throw Error("MCTS コンストラクタには、state または node が必須です")
+    }
+
     this.tree = new GameTree(rootNode)
     this.selectedNodeList = []
   }
@@ -29,9 +37,11 @@ export class MCTS {
   }
 
   run(callback: (state: GameState) => void): void {
+    const rootNode = this.tree.getRootNode()
+    console.log("学習開始", rootNode)
     this.runSteps()
-    console.log("学習終了", this.tree.getRootNode())
     this.tree.updateRootNode()
+    console.log("学習終了", rootNode, "=>", this.tree.getRootNode())
     callback(this.tree.getRootNode().getState())
   }
 
@@ -46,6 +56,18 @@ export class MCTS {
       this.select()
       this.expand()
       this.backPropagate(this.simulate())
+    }
+  }
+
+  runStepsLocal(writer: (tree: GameTree) => void, sep: number): void {
+    for (const i of range(1, this.config.stepNumber)) {
+      this.select()
+      this.expand()
+      this.backPropagate(this.simulate())
+
+      if (i % sep === 0) {
+        writer(this.tree)
+      }
     }
   }
 
@@ -84,4 +106,31 @@ export class MCTS {
   getSelectedLeafNode(): GameNode {
     return this.selectedNodeList[this.selectedNodeList.length - 1]
   }
+
+  static fromJson(config: MctsConfig, jsonNode: JsonNode): MCTS {
+    const Mcts = new MCTS(config, undefined, GameNode.fromJson(jsonNode))
+    Mcts.selectedNodeList = []
+
+    return Mcts
+  }
+}
+
+export function getInitCells(isAiWhite: boolean): CellState[][] {
+  const initCells: CellState[][] = range(0, 10).map(() =>
+    range(0, 10).map(() => undefined)
+  )
+
+  if (isAiWhite) {
+    initCells[4][4] = "ai"
+    initCells[4][5] = "opponent"
+    initCells[5][5] = "ai"
+    initCells[5][4] = "opponent"
+  } else {
+    initCells[4][4] = "opponent"
+    initCells[4][5] = "ai"
+    initCells[5][5] = "opponent"
+    initCells[5][4] = "ai"
+  }
+
+  return initCells
 }

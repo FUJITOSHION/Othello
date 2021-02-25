@@ -1,5 +1,5 @@
 import type { AILevel } from "types"
-import gameConfigSlice from "@store/game-config/slice"
+import gameConfigSlice from "@store/game-config"
 import { useDispatch } from "@hooks/store"
 import { useAiLevel } from "@hooks/store/game-config"
 
