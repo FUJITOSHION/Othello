@@ -1,7 +1,10 @@
 import { useMemo } from "react"
+import Link from "next/link"
 import fs from "fs"
 
 import type { JsonNode } from "types"
+import { pagesPath } from "@path"
+import { useIsFin, useResult } from "@hooks/store/board"
 import { MCTS } from "@utils/mcts"
 import { GameNode } from "@utils/mcts/game-node"
 import { ClientSideRender } from "@components/ClientSideRender"
@@ -22,14 +25,29 @@ const GamePage: React.FC<GamePageProps> = ({ initJson }: GamePageProps) => {
     stepNumber: 10,
   }
 
-  const mcts = useMemo(() => new MCTS(config, undefined, rootNode), [])
+  const isFin = useIsFin()
+  const result = useResult()
+  const mcts = useMemo(() => new MCTS(config, undefined, rootNode), [isFin])
 
   return (
     <div>
-      <ClientSideRender>
-        <SelectionCpuLevel />
-      </ClientSideRender>
-      <BoardSurface mcts={mcts} />
+      {isFin ? (
+        <div>
+          <h1>
+            {result.score?.ai} vs {result.score?.opponent} で{" "}
+            {result.winner === "ai" ? "AI" : "あなた"} の勝ち！
+          </h1>
+
+          <Link href={pagesPath.$url()}>トップページへ</Link>
+        </div>
+      ) : (
+        <>
+          <ClientSideRender>
+            <SelectionCpuLevel />
+          </ClientSideRender>
+          <BoardSurface mcts={mcts} />
+        </>
+      )}
     </div>
   )
 }

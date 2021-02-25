@@ -1,11 +1,13 @@
 import { useEffect, memo } from "react"
+import { useDispatch } from "react-redux"
 import dayjs from "dayjs"
 
 import type { BoardIndex, CellState, GameState } from "types"
+import boardSlice from "@store/board"
 import { Cell } from "./Cell"
 import { range, includes } from "ramda"
 import { validIndexes } from "../utils/game/board-index"
-import { apply } from "../utils/game/simulate"
+import { apply, checkFin } from "../utils/game/simulate"
 import { useState } from "react"
 import { MCTS } from "@utils/mcts"
 import { CalcGameTime } from "./CalcGameTime"
@@ -40,6 +42,7 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
   const [aiStartTime, setAiStartTime] = useState<dayjs.Dayjs>(dayjs())
   const [cells, setCells] = useState<CellState[][]>(initCells)
   const [puttables, setPuttables] = useState<BoardIndex[]>([])
+  const dispatch = useDispatch()
 
   const callback = (state: GameState): void => {
     console.log("AI終了")
@@ -67,6 +70,17 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
   }
 
   useEffect(() => {
+    const result = checkFin({
+      boardState: cells,
+      nextPlayer: isAiTurn ? "ai" : "opponent",
+    })
+
+    if (result.isFin) {
+      console.log(result)
+      dispatch(boardSlice.actions.setResult(result.score))
+      dispatch(boardSlice.actions.setIsFin(true))
+    }
+
     if (isAiTurn) {
       console.log("AI待ち...")
       setAiStartTime(dayjs())
