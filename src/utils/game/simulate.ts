@@ -1,4 +1,3 @@
-import { stat } from "fs"
 import { curry } from "ramda"
 
 import type { GameState, BoardIndex, CellState, Player, Score } from "types"
