@@ -15,6 +15,7 @@ import { CalcGameTime } from "./CalcGameTime"
 import { VisualizeSituation } from "./VisualizeSituation"
 import { RestartButton } from "./RestartButton"
 import { SelectionCpuLevel } from "./SelectionCpuLevel"
+import { NUMCELLS } from "../utils/game/index"
 
 const MIN_WAIT_TIME = 4000
 
@@ -27,19 +28,19 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
 }: BoardSurfaceProps) => {
   const isAiWhite = true
 
-  const initCells: CellState[][] = range(0, 10).map(() =>
-    range(0, 10).map(() => undefined)
+  const initCells: CellState[][] = range(0, NUMCELLS).map(() =>
+    range(0, NUMCELLS).map(() => undefined)
   )
   if (isAiWhite) {
+    initCells[3][3] = "ai"
+    initCells[3][4] = "opponent"
     initCells[4][4] = "ai"
-    initCells[4][5] = "opponent"
-    initCells[5][5] = "ai"
-    initCells[5][4] = "opponent"
+    initCells[4][3] = "opponent"
   } else {
+    initCells[3][3] = "opponent"
+    initCells[3][4] = "ai"
     initCells[4][4] = "opponent"
-    initCells[4][5] = "ai"
-    initCells[5][5] = "opponent"
-    initCells[5][4] = "ai"
+    initCells[4][3] = "ai"
   }
   const [isAiTurn, setIsAiTurn] = useState<boolean>(false)
   const [aiStartTime, setAiStartTime] = useState<dayjs.Dayjs>(dayjs())

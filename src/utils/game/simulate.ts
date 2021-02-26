@@ -3,6 +3,7 @@ import { curry } from "ramda"
 import type { GameState, BoardIndex, CellState, Player, Score } from "types"
 import { getCellState, validIndexes } from "./board-index"
 import { createCheckPuttable } from "./check"
+import { NUMCELLSPERLINE } from "./index"
 
 export function createApply(
   diffIndex: BoardIndex
@@ -25,8 +26,6 @@ export function createApply(
     const put = () => {
       state.boardState[currentIndex[0]][currentIndex[1]] = state.nextPlayer
     }
-
-    put()
 
     currentIndex = getNextIndex(currentIndex)
     currentState = getCellState(state, currentIndex)
@@ -57,8 +56,9 @@ export const createApplyLine = curry(
       [diff[0], diff[1]],
       [-1 * diff[0], -1 * diff[1]],
     ] as BoardIndex[]).forEach((diff) => {
-      if (createCheckPuttable(diff)(state, index))
+      if (createCheckPuttable(diff)(state, index)) {
         createApply(diff)(state, index)
+      }
     })
   }
 )
@@ -69,9 +69,9 @@ export const apply = curry(
       boardState: [...state.boardState.map((line) => [...line])],
       nextPlayer: state.nextPlayer,
     }
-
     diffs.forEach((diff) => createApplyLine(diff)(nextState, index))
 
+    nextState.boardState[index[0]][index[1]] = nextState.nextPlayer
     // 手番が入れ替わる
     nextState.nextPlayer = state.nextPlayer === "ai" ? "opponent" : "ai"
 
@@ -90,7 +90,6 @@ const createCounter = (player: Player) => {
 
 export const aiCounter = createCounter("ai")
 export const opponentCounter = createCounter("opponent")
-const maxCount = 100
 
 type ResCheckFin = {
   isFin: boolean
@@ -110,7 +109,7 @@ export const checkFin = (state: GameState): ResCheckFin => {
       isFin: true,
       winner: "opponent",
       score: {
-        opponent: maxCount,
+        opponent: NUMCELLSPERLINE,
         ai: 0,
       },
     }
@@ -126,7 +125,7 @@ export const checkFin = (state: GameState): ResCheckFin => {
       winner: "ai",
       score: {
         opponent: 0,
-        ai: maxCount,
+        ai: NUMCELLSPERLINE,
       },
     }
 
@@ -157,7 +156,7 @@ export const checkFin = (state: GameState): ResCheckFin => {
   }
 
   // 盤面が全て埋まって終了判定
-  const isFin = aiCount + opponentCount === maxCount
+  const isFin = aiCount + opponentCount === NUMCELLSPERLINE
   return {
     isFin: isFin,
     winner:

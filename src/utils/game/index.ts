@@ -1,0 +1,2 @@
+export const NUMCELLS = 8
+export const NUMCELLSPERLINE = NUMCELLS * NUMCELLS
