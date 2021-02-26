@@ -21,7 +21,6 @@ export const Checkbox: React.FC<CheckboxProps> = ({
         <BaseCheckbox
           checked={checked}
           onChange={onChange}
-          // color="primary"
           style={{
             color: orange[800],
           }}
