@@ -3,7 +3,6 @@ import Link from "next/link"
 import fs from "fs"
 
 import type { JsonNode } from "types"
-import type { MctsConfig } from "@utils/mcts/types"
 import { pagesPath } from "@path"
 import { useIsFin, useResult } from "@hooks/store/board"
 import { MCTS, createConfig } from "@utils/mcts"
