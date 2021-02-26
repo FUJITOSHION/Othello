@@ -18,7 +18,6 @@ export class GameTree {
 
   applyOpponentNode(state: GameState): void {
     const nextNode = this.rootNode.getChildNodeByIndex(state)
-
     if (!nextNode) throw Error("その手は存在しません")
     if (nextNode.isLeaf()) nextNode.setChildren()
 

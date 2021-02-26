@@ -4,6 +4,7 @@ import type { GameState, CellState, JsonNode } from "types"
 import type { MctsConfig } from "./types"
 import { GameTree } from "./game-tree"
 import { GameNode } from "./game-node"
+import { NUMCELLS } from "../game/index"
 
 export class MCTS {
   private config: MctsConfig
@@ -116,20 +117,20 @@ export class MCTS {
 }
 
 export function getInitCells(isAiWhite: boolean): CellState[][] {
-  const initCells: CellState[][] = range(0, 10).map(() =>
-    range(0, 10).map(() => undefined)
+  const initCells: CellState[][] = range(0, NUMCELLS).map(() =>
+    range(0, NUMCELLS).map(() => undefined)
   )
 
   if (isAiWhite) {
+    initCells[3][3] = "ai"
+    initCells[3][4] = "opponent"
     initCells[4][4] = "ai"
-    initCells[4][5] = "opponent"
-    initCells[5][5] = "ai"
-    initCells[5][4] = "opponent"
+    initCells[4][3] = "opponent"
   } else {
+    initCells[3][3] = "opponent"
+    initCells[3][4] = "ai"
     initCells[4][4] = "opponent"
-    initCells[4][5] = "ai"
-    initCells[5][5] = "opponent"
-    initCells[5][4] = "ai"
+    initCells[4][3] = "ai"
   }
 
   return initCells

@@ -3,6 +3,7 @@ import { curry } from "ramda"
 import type { GameState, BoardIndex, CellState, Player, Score } from "types"
 import { getCellState, validIndexes } from "./board-index"
 import { createCheckPuttable } from "./check"
+import { NUMCELLSPERLINE } from "./index"
 
 export function createApply(
   diffIndex: BoardIndex
@@ -90,7 +91,7 @@ const createCounter = (player: Player) => {
 
 export const aiCounter = createCounter("ai")
 export const opponentCounter = createCounter("opponent")
-const maxCount = 100
+const maxCount = NUMCELLSPERLINE
 
 type ResCheckFin = {
   isFin: boolean

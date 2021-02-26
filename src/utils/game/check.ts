@@ -3,9 +3,15 @@ import { curry } from "ramda"
 import type { GameState, BoardIndex, CellState } from "types"
 import { getCellState } from "./board-index"
 import { diffs } from "./simulate"
+import { NUMCELLS } from "./index"
 
 export function isValidIndex(index: BoardIndex): boolean {
-  return index[0] >= 0 && index[1] >= 0 && index[0] <= 9 && index[0] <= 9
+  return (
+    index[0] >= 0 &&
+    index[1] >= 0 &&
+    index[0] <= NUMCELLS - 1 &&
+    index[0] <= NUMCELLS - 1
+  )
 }
 
 export function createCheckPuttable(
