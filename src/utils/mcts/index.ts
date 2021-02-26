@@ -4,7 +4,7 @@ import type { GameState, CellState, JsonNode } from "types"
 import type { MctsConfig } from "./types"
 import { GameTree } from "./game-tree"
 import { GameNode } from "./game-node"
-import { NUMCELLS } from "../game/index"
+import { NUMCELLS } from "../game"
 
 export class MCTS {
   private config: MctsConfig
