@@ -17,7 +17,7 @@ import { RestartButton } from "./RestartButton"
 import { SelectionCpuLevel } from "./SelectionCpuLevel"
 import { NUMCELLS } from "../utils/game/index"
 
-const MIN_WAIT_TIME = 4000
+const MIN_WAIT_TIME = 1000
 
 type BoardSurfaceProps = {
   mcts: MCTS
@@ -87,7 +87,6 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
 
     if (isAiTurn) {
       console.log("AI待ち...")
-      setAiStartTime(dayjs())
       mcts.getNextState(
         {
           boardState: cells,
@@ -102,6 +101,7 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
           nextPlayer: "opponent",
         })
       )
+      setAiStartTime(dayjs())
     }
   }, [cells])
 
