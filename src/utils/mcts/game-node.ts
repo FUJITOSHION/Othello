@@ -3,7 +3,7 @@ import type { MctsConfig } from "./types"
 import { validIndexes } from "@utils/game/board-index"
 import { apply, checkFin } from "@utils/game/simulate"
 import { getRandomInt } from "@utils/random"
-import { NUMCELLSPERLINE } from "../game/index"
+import { NUMCELLS } from "../game/index"
 
 export class GameNode {
   private attemptNumber: number
@@ -67,7 +67,7 @@ export class GameNode {
 
   score(): string {
     return `${this.winNumber} / ${this.attemptNumber} (${(
-      (NUMCELLSPERLINE * this.winNumber) /
+      (NUMCELLS * this.winNumber) /
       this.attemptNumber
     ).toFixed(0)} %)`
   }

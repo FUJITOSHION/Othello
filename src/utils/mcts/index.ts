@@ -1,10 +1,10 @@
-import { range } from "ramda"
+import { range, curry } from "ramda"
 
-import type { GameState, CellState, JsonNode } from "types"
+import type { GameState, CellState, JsonNode, AILevel } from "types"
 import type { MctsConfig } from "./types"
 import { GameTree } from "./game-tree"
 import { GameNode } from "./game-node"
-import { NUMCELLS } from "../game"
+import { NUMCELLSPERLINE, NUMCELLS } from "../game"
 
 export class MCTS {
   private config: MctsConfig
@@ -117,8 +117,8 @@ export class MCTS {
 }
 
 export function getInitCells(isAiWhite: boolean): CellState[][] {
-  const initCells: CellState[][] = range(0, NUMCELLS).map(() =>
-    range(0, NUMCELLS).map(() => undefined)
+  const initCells: CellState[][] = range(0, NUMCELLSPERLINE).map(() =>
+    range(0, NUMCELLSPERLINE).map(() => undefined)
   )
 
   if (isAiWhite) {
@@ -135,3 +135,17 @@ export function getInitCells(isAiWhite: boolean): CellState[][] {
 
   return initCells
 }
+
+export const createConfig = curry(
+  (level: AILevel, count: number): MctsConfig => {
+    const [minStep, maxStep] =
+      level === "強い" ? [50, 750] : level == "普通" ? [30, 400] : [10, 200]
+    const stepNumber = (count * (maxStep - minStep)) / NUMCELLS
+    // const expandThreshold = stepNumber / 750
+    return {
+      expandThreshold: 2,
+      CP: 1 / Math.sqrt(2),
+      stepNumber: stepNumber,
+    }
+  }
+)
