@@ -3,7 +3,16 @@ import { range, curry } from "ramda"
 import type { GameState, BoardIndex, CellState } from "types"
 import { checkPuttable, isValidIndex } from "./check"
 
-export function createAllIndexes(numMin: number, numMax: number): BoardIndex[] {
+export function createAllIndexes(): BoardIndex[] {
+  return range(0, 10).flatMap((i) =>
+    range(0, 10).map((j): BoardIndex => [i, j])
+  )
+}
+
+export function createPossibleIndexes(
+  numMin: number,
+  numMax: number
+): BoardIndex[] {
   return range(numMin, numMax).flatMap((i) =>
     range(numMin, numMax).map((j): BoardIndex => [i, j])
   )
@@ -12,17 +21,17 @@ export function createAllIndexes(numMin: number, numMax: number): BoardIndex[] {
 export function validIndexes(state: GameState): BoardIndex[] {
   let numMin = 9
   let numMax = 0
-  state.boardState.forEach((item, numRow) => {
-    item.forEach((cell, index) => {
+  state.boardState.forEach((item, i) => {
+    item.forEach((cell, j) => {
       if (cell !== undefined) {
-        numMin = Math.min(numMin, index, numRow)
-        numMax = Math.max(numMax, index, numRow)
+        numMin = Math.min(numMin, i, j)
+        numMax = Math.max(numMax, i, j)
       }
     })
   })
   numMax = numMax === 9 ? numMax + 1 : numMax + 2
   numMin = numMin === 0 ? numMin : numMin - 1
-  return createAllIndexes(numMin, numMax).filter((index) =>
+  return createPossibleIndexes(numMin, numMax).filter((index) =>
     checkPuttable(state, index)
   )
 }
