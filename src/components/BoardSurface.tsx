@@ -1,6 +1,5 @@
 import { useEffect, memo } from "react"
 import { useDispatch } from "react-redux"
-import dayjs from "dayjs"
 
 import type { BoardIndex, CellState, GameState } from "types"
 import boardSlice from "@store/board"
@@ -16,7 +15,7 @@ import { RestartButton } from "./RestartButton"
 import { SelectionCpuLevel } from "./SelectionCpuLevel"
 import { NUMCELLS } from "../utils/game/index"
 
-const MIN_WAIT_TIME = 4000
+const MIN_WAIT_TIME = 1000
 
 type BoardSurfaceProps = {
   mcts: MCTS
@@ -42,15 +41,12 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
     initCells[4][3] = "ai"
   }
   const [isAiTurn, setIsAiTurn] = useState<boolean>(false)
-  const [aiStartTime, setAiStartTime] = useState<dayjs.Dayjs>(dayjs())
   const [cells, setCells] = useState<CellState[][]>(initCells)
   const [puttables, setPuttables] = useState<BoardIndex[]>([])
   const dispatch = useDispatch()
 
   const callback = (state: GameState): void => {
     console.log("AI終了")
-    const diff = dayjs().diff(aiStartTime)
-    const waitTime = diff > MIN_WAIT_TIME ? 0 : MIN_WAIT_TIME - diff
 
     setTimeout(() => {
       setIsAiTurn(false)
@@ -69,7 +65,7 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
           callback
         )
       }
-    }, waitTime)
+    }, MIN_WAIT_TIME)
   }
 
   useEffect(() => {
@@ -86,7 +82,6 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
 
     if (isAiTurn) {
       console.log("AI待ち...")
-      setAiStartTime(dayjs())
       mcts.getNextState(
         {
           boardState: cells,
