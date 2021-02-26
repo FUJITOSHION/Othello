@@ -15,21 +15,24 @@ import { CalcGameTime } from "./CalcGameTime"
 import { VisualizeSituation } from "./VisualizeSituation"
 import { RestartButton } from "./RestartButton"
 import { SelectionCpuLevel } from "./SelectionCpuLevel"
-import { NUMCELLS } from "../utils/game/index"
+import { NUMCELLSPERLINE } from "../utils/game/index"
+import { MctsConfig } from "@utils/mcts/types"
 
-const MIN_WAIT_TIME = 1000
+const MIN_WAIT_TIME = 2000
 
 type BoardSurfaceProps = {
   mcts: MCTS
+  conf: (count: number) => MctsConfig
 }
 
 const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
   mcts,
+  conf,
 }: BoardSurfaceProps) => {
   const isAiWhite = true
 
-  const initCells: CellState[][] = range(0, NUMCELLS).map(() =>
-    range(0, NUMCELLS).map(() => undefined)
+  const initCells: CellState[][] = range(0, NUMCELLSPERLINE).map(() =>
+    range(0, NUMCELLSPERLINE).map(() => undefined)
   )
   if (isAiWhite) {
     initCells[3][3] = "ai"
@@ -42,6 +45,7 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
     initCells[4][4] = "opponent"
     initCells[4][3] = "ai"
   }
+  const [count, setCount] = useState(0)
   const [isAiTurn, setIsAiTurn] = useState<boolean>(false)
   const [aiStartTime, setAiStartTime] = useState<dayjs.Dayjs>(dayjs())
   const [cells, setCells] = useState<CellState[][]>(initCells)
@@ -84,6 +88,9 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
       dispatch(boardSlice.actions.setResult(result.score))
       dispatch(boardSlice.actions.setIsFin(true))
     }
+
+    setCount(count + 1)
+    mcts.updateConfig(conf(count))
 
     if (isAiTurn) {
       console.log("AI待ち...")
@@ -139,6 +146,7 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
                     setIsAiTurn(true)
                     setCells(nextState.boardState)
                     setPuttables([])
+                    setAiStartTime(dayjs())
                   }}
                   isValid={includes([i, j], puttables)}
                 />
@@ -150,7 +158,6 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
 
       <div className={styles.right}>
         <RestartButton />
-        <SelectionCpuLevel />
       </div>
 
       <div className={styles.footer}>
