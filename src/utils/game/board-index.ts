@@ -9,8 +9,31 @@ export function createAllIndexes(): BoardIndex[] {
   )
 }
 
+export function createPossibleIndexes(
+  numMin: number,
+  numMax: number
+): BoardIndex[] {
+  return range(numMin, numMax).flatMap((i) =>
+    range(numMin, numMax).map((j): BoardIndex => [i, j])
+  )
+}
+
 export function validIndexes(state: GameState): BoardIndex[] {
-  return createAllIndexes().filter((index) => checkPuttable(state, index))
+  let numMin = 9
+  let numMax = 0
+  state.boardState.forEach((item, i) => {
+    item.forEach((cell, j) => {
+      if (cell !== undefined) {
+        numMin = Math.min(numMin, i, j)
+        numMax = Math.max(numMax, i, j)
+      }
+    })
+  })
+  numMax = numMax === 9 ? numMax + 1 : numMax + 2
+  numMin = numMin === 0 ? numMin : numMin - 1
+  return createPossibleIndexes(numMin, numMax).filter((index) =>
+    checkPuttable(state, index)
+  )
 }
 
 export const getCellState = curry(
