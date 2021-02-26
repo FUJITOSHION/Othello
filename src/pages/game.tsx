@@ -10,6 +10,8 @@ import { GameNode } from "@utils/mcts/game-node"
 import { Layout } from "@components/Layout"
 import { ClientSideRender } from "@components/ClientSideRender"
 import { BoardSurface } from "../components/BoardSurface"
+import { useAiLevel } from "@hooks/store/game-config"
+import { MctsConfig } from "@utils/mcts/types"
 
 type GamePageProps = {
   initJson: {
@@ -19,11 +21,20 @@ type GamePageProps = {
 
 const GamePage: React.FC<GamePageProps> = ({ initJson }: GamePageProps) => {
   const rootNode = GameNode.fromJson(initJson.rootNode)
-  const config = {
-    expandThreshold: 2,
-    CP: 1 / Math.sqrt(2),
-    stepNumber: 10,
+  const level = useAiLevel()
+  const createConfig = (level: string): MctsConfig => {
+    const CP = 1 / Math.sqrt(2)
+    if (level === "強い") {
+      return { expandThreshold: 5, CP, stepNumber: 150 }
+    } else if (level === "普通") {
+      return { expandThreshold: 3, CP, stepNumber: 50 }
+    } else {
+      return { expandThreshold: 2, CP, stepNumber: 20 }
+    }
   }
+  const config = createConfig(level)
+  console.log(config)
+  console.log("a")
 
   const isFin = useIsFin()
   const result = useResult()
