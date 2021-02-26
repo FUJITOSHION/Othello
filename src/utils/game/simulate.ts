@@ -1,3 +1,4 @@
+import { stat } from "fs"
 import { curry } from "ramda"
 
 import type { GameState, BoardIndex, CellState, Player, Score } from "types"
@@ -26,8 +27,6 @@ export function createApply(
     const put = () => {
       state.boardState[currentIndex[0]][currentIndex[1]] = state.nextPlayer
     }
-
-    put()
 
     currentIndex = getNextIndex(currentIndex)
     currentState = getCellState(state, currentIndex)
@@ -58,8 +57,9 @@ export const createApplyLine = curry(
       [diff[0], diff[1]],
       [-1 * diff[0], -1 * diff[1]],
     ] as BoardIndex[]).forEach((diff) => {
-      if (createCheckPuttable(diff)(state, index))
+      if (createCheckPuttable(diff)(state, index)) {
         createApply(diff)(state, index)
+      }
     })
   }
 )
@@ -70,9 +70,9 @@ export const apply = curry(
       boardState: [...state.boardState.map((line) => [...line])],
       nextPlayer: state.nextPlayer,
     }
-
     diffs.forEach((diff) => createApplyLine(diff)(nextState, index))
 
+    nextState.boardState[index[0]][index[1]] = nextState.nextPlayer
     // 手番が入れ替わる
     nextState.nextPlayer = state.nextPlayer === "ai" ? "opponent" : "ai"
 
