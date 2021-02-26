@@ -1,0 +1,34 @@
+@use "@styles/globals/variable" as var;
+
+.navigation {
+  display: flex;
+  align-items: center;
+  height: 60px;
+}
+
+.navList {
+  list-style: none;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  padding: 20px;
+}
+
+.navItem {
+  &:not(:first-child) {
+    margin-left: 20px;
+  }
+}
+
+.link {
+  color: var.$white;
+  text-decoration: none;
+  &:hover {
+    font-weight: bold;
+  }
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+}

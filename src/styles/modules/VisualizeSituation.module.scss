@@ -1,0 +1,44 @@
+.container {
+  width: 100%;
+  height: 100%;
+}
+
+.scoreContainer {
+  display: grid;
+  grid-template: "opponent score ai" 100% / 30% 40% 30%;
+  width: 100%;
+  font-size: 1.8rem;
+}
+
+.opponent {
+  grid-area: opponent;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.ai {
+  grid-area: ai;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.score {
+  grid-area: score;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+}
+
+.opponent,
+.ai {
+  font-size: 1.8rem;
+}
+
+.gameStatus {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 1.3rem;
+}

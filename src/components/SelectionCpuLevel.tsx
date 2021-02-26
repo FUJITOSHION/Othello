@@ -2,25 +2,26 @@ import type { AILevel } from "types"
 import gameConfigSlice from "@store/game-config"
 import { useDispatch } from "@hooks/store"
 import { useAiLevel } from "@hooks/store/game-config"
+import { Select } from "@components/Select"
+import styles from "@styles/modules/SelectionCpuLevel.module.scss"
 
 export const SelectionCpuLevel: React.FC = () => {
   const level = useAiLevel()
   const dispatch = useDispatch()
 
-  const handleLevelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch(gameConfigSlice.actions.setAiLevel(e.target.value as AILevel))
-  }
-
   return (
-    <div>
-      <span>CPUの強さを選んでください</span>
-      <select name="level" onChange={handleLevelChange} value={level}>
-        {["強い", "普通", "弱い"].map((lev) => (
-          <option value={lev} key={lev}>
-            {lev}
-          </option>
-        ))}
-      </select>
+    <div className={`m-un-selectable ${styles.container}`}>
+      <span className={styles.label}>CPUの強さを選ぶ: </span>
+      <Select
+        label="強さ"
+        items={["強い", "普通", "弱い"]}
+        value={level}
+        handleChange={(e) => {
+          dispatch(
+            gameConfigSlice.actions.setAiLevel(e.target.value as AILevel)
+          )
+        }}
+      />
     </div>
   )
 }
