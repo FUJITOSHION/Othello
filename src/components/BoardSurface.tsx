@@ -1,5 +1,6 @@
 import { useEffect, memo } from "react"
 import { useDispatch } from "react-redux"
+import dayjs from "dayjs"
 
 import type { BoardIndex, CellState, GameState } from "types"
 import boardSlice from "@store/board"
@@ -41,12 +42,15 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
     initCells[4][3] = "ai"
   }
   const [isAiTurn, setIsAiTurn] = useState<boolean>(false)
+  const [aiStartTime, setAiStartTime] = useState<dayjs.Dayjs>(dayjs())
   const [cells, setCells] = useState<CellState[][]>(initCells)
   const [puttables, setPuttables] = useState<BoardIndex[]>([])
   const dispatch = useDispatch()
 
   const callback = (state: GameState): void => {
     console.log("AI終了")
+    const diff = dayjs().diff(aiStartTime)
+    const waitTime = diff > MIN_WAIT_TIME ? 0 : MIN_WAIT_TIME - diff
 
     setTimeout(() => {
       setIsAiTurn(false)
@@ -65,7 +69,7 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
           callback
         )
       }
-    }, MIN_WAIT_TIME)
+    }, waitTime)
   }
 
   useEffect(() => {
@@ -96,6 +100,7 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
           nextPlayer: "opponent",
         })
       )
+      setAiStartTime(dayjs())
     }
   }, [cells])
 
