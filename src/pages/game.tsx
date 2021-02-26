@@ -7,8 +7,8 @@ import { pagesPath } from "@path"
 import { useIsFin, useResult } from "@hooks/store/board"
 import { MCTS } from "@utils/mcts"
 import { GameNode } from "@utils/mcts/game-node"
+import { Layout } from "@components/Layout"
 import { ClientSideRender } from "@components/ClientSideRender"
-import { SelectionCpuLevel } from "../components/SelectionCpuLevel"
 import { BoardSurface } from "../components/BoardSurface"
 
 type GamePageProps = {
@@ -30,25 +30,24 @@ const GamePage: React.FC<GamePageProps> = ({ initJson }: GamePageProps) => {
   const mcts = useMemo(() => new MCTS(config, undefined, rootNode), [isFin])
 
   return (
-    <div>
-      {isFin ? (
-        <div>
-          <h1>
-            {result.score?.ai} vs {result.score?.opponent} で{" "}
-            {result.winner === "ai" ? "AI" : "あなた"} の勝ち！
-          </h1>
+    <Layout>
+      <ClientSideRender>
+        {isFin ? (
+          <div>
+            <h1>
+              {result.score?.ai} vs {result.score?.opponent} で{" "}
+              {result.winner === "ai" ? "AI" : "あなた"} の勝ち！
+            </h1>
 
-          <Link href={pagesPath.$url()}>トップページへ</Link>
-        </div>
-      ) : (
-        <>
-          <ClientSideRender>
-            <SelectionCpuLevel />
-          </ClientSideRender>
-          <BoardSurface mcts={mcts} />
-        </>
-      )}
-    </div>
+            <Link href={pagesPath.$url()}>トップページへ</Link>
+          </div>
+        ) : (
+          <>
+            <BoardSurface mcts={mcts} />
+          </>
+        )}
+      </ClientSideRender>
+    </Layout>
   )
 }
 

@@ -2,6 +2,7 @@ import { useEffect, memo } from "react"
 import { useDispatch } from "react-redux"
 import dayjs from "dayjs"
 
+import styles from "@styles/modules/BoardSurface.module.scss"
 import type { BoardIndex, CellState, GameState } from "types"
 import boardSlice from "@store/board"
 import { Cell } from "./Cell"
@@ -105,42 +106,56 @@ const BoardSurfaceComp: React.FC<BoardSurfaceProps> = ({
   }, [cells])
 
   return (
-    <div>
-      <h1>{isAiTurn ? "AIのターン" : "あなたのターン"}</h1>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {cells.map((line, i) => (
-          <div style={{ display: "flex", flexDirection: "row" }} key={i}>
-            {line.map((cell, j) => (
-              <Cell
-                state={cell}
-                key={j}
-                onClick={async () => {
-                  const nextState = apply(
-                    { boardState: cells, nextPlayer: "opponent" },
-                    [i, j]
-                  )
-                  setIsAiTurn(true)
-                  setCells(nextState.boardState)
-                  setPuttables([])
-                }}
-                isValid={includes([i, j], puttables)}
-              />
-            ))}
-          </div>
-        ))}
+    <div className={styles.container}>
+      <div className={styles.time}>
+        <CalcGameTime />
       </div>
-      <CalcGameTime />
-      <VisualizeSituation
-        state={{ boardState: cells, nextPlayer: "opponent" }}
-      />
-      <RestartButton />
-      <SelectionCpuLevel />
-      <a href="https://github.com/FUJITOSHION/Othello">github</a>
+
+      <div className={styles.score}>
+        <VisualizeSituation
+          state={{ boardState: cells, nextPlayer: "opponent" }}
+        />
+      </div>
+
+      <div className={styles.winner}></div>
+
+      <div className={styles.left}>
+        <a href="https://github.com/FUJITOSHION/Othello">Github</a>
+      </div>
+
+      <div className={styles.boardWrapper}>
+        <div className={styles.board}>
+          {cells.map((line, i) => (
+            <div className={styles.boardRow} key={i}>
+              {line.map((cell, j) => (
+                <Cell
+                  state={cell}
+                  key={j}
+                  onClick={async () => {
+                    const nextState = apply(
+                      { boardState: cells, nextPlayer: "opponent" },
+                      [i, j]
+                    )
+                    setIsAiTurn(true)
+                    setCells(nextState.boardState)
+                    setPuttables([])
+                  }}
+                  isValid={includes([i, j], puttables)}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className={styles.right}>
+        <RestartButton />
+        <SelectionCpuLevel />
+      </div>
+
+      <div className={styles.footer}>
+        {isAiTurn ? "AIのターン" : "あなたのターン"}
+      </div>
     </div>
   )
 }

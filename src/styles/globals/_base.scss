@@ -4,6 +4,7 @@
 
 html,
 body {
+  background: var.$main-color;
   color: var.$text-color;
   padding: 0;
   margin: 0;
@@ -14,4 +15,8 @@ body {
 a {
   color: var.$link-color;
   text-decoration: none;
+}
+
+input[type="checkbox"] {
+  display: none;
 }
