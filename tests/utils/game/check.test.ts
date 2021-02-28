@@ -1,8 +1,5 @@
-import { CellState, GameState } from "../../../src/types/index"
-import {
-  isValidIndex,
-  createCheckLinePuttable,
-} from "../../../src/utils/game/check"
+import { CellState, GameState } from "types/index"
+import { isValidIndex, createCheckLinePuttable } from "@utils/game/check"
 
 test(`isValidIndex`, () => {
   expect(isValidIndex([0, 0])).toBe(true)
