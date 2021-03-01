@@ -1,16 +1,19 @@
-import { CellState } from "../types/index"
+import { memo } from "react"
+import { includes } from "ramda"
 
 import styles from "@styles/modules/Cell.module.scss"
+import type { CellState } from "types"
 import { useIsAiWhite } from "@hooks/store/game-config"
+import { useIsAiTurn } from "@hooks/store/board"
 
 type Props = {
   state: CellState
-  isValid: boolean
   onClick: () => void
 }
 
-export const Cell: React.FC<Props> = ({ state, isValid, onClick }: Props) => {
+const BaseCell: React.FC<Props> = ({ state, onClick }: Props) => {
   const isAIWhite = useIsAiWhite()
+  const isAiTurn = useIsAiTurn()
 
   return (
     <div
@@ -18,10 +21,12 @@ export const Cell: React.FC<Props> = ({ state, isValid, onClick }: Props) => {
         (state === "ai" && isAIWhite) || (state === "opponent" && !isAIWhite)
           ? styles.white
           : styles.black
-      } ${isValid ? styles.puttable : ""}`}
-      onClick={isValid ? onClick : undefined}
+      } ${!isAiTurn && state === "puttable" ? styles.puttable : ""}`}
+      onClick={!isAiTurn && state === "puttable" ? onClick : undefined}
     >
-      {typeof state === "string" ? "●" : ""}
+      {includes(state, ["ai", "opponent"]) ? "●" : ""}
     </div>
   )
 }
+
+export const Cell = memo(BaseCell)

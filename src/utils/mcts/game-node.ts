@@ -2,6 +2,7 @@ import type { GameState, JsonNode } from "types"
 import type { MctsConfig } from "./types"
 import { validIndexes } from "@utils/game/board-index"
 import { apply, checkFin } from "@utils/game/simulate"
+import { applyIsValid } from "@utils/game/check"
 import { getRandomInt } from "@utils/random"
 import { NUMCELLS } from "../game/index"
 
@@ -48,7 +49,7 @@ export class GameNode {
     let checkResult = checkFin(currentState)
 
     while (!checkResult.isFin) {
-      const validMoves = new GameNode(currentState).possibleChildNodes()
+      const validMoves = new GameNode(currentState).possibleMoves()
       if (validMoves.length === 0) {
         currentState = {
           boardState: currentState.boardState,
@@ -78,9 +79,27 @@ export class GameNode {
   }
 
   possibleChildNodes(): GameNode[] {
-    const valids = validIndexes(this.state)
-      .map((index) => apply(this.state, index))
-      .map((state) => new GameNode(state))
+    const valids = validIndexes(this.state).map(
+      (index) => new GameNode(applyIsValid(apply(this.state, index)))
+    )
+
+    return valids.length !== 0
+      ? valids
+      : [
+          new GameNode(
+            applyIsValid({
+              boardState: this.state.boardState,
+              nextPlayer: this.state.nextPlayer === "ai" ? "opponent" : "ai",
+            })
+          ),
+        ]
+  }
+
+  possibleMoves(): GameNode[] {
+    // possibleChildNodes の puttable を反映をしない版
+    const valids = validIndexes(this.state).map(
+      (index) => new GameNode(apply(this.state, index))
+    )
 
     return valids.length !== 0
       ? valids
@@ -94,6 +113,10 @@ export class GameNode {
 
   setChildren(): void {
     this.children = this.possibleChildNodes()
+  }
+
+  getChildren(): GameNode[] {
+    return this.children
   }
 
   isLeaf(): boolean {

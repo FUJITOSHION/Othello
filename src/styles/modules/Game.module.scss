@@ -1,0 +1,59 @@
+.container {
+  width: 100%;
+  display: grid;
+  grid-template:
+    "time score winner" 100px
+    "left board right" 1fr
+    "footer footer footer" 100px / 20% 60% 20%;
+}
+
+.time {
+  grid-area: time;
+  font-size: 2.2rem;
+}
+
+.score {
+  grid-area: score;
+  // font-size: 1.8rem;
+}
+
+.winner {
+  grid-area: winner;
+}
+
+.left {
+  grid-area: left;
+}
+
+.right {
+  grid-area: right;
+}
+
+.left,
+.right {
+  margin: 4rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.boardWrapper {
+  grid-area: board;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer {
+  grid-area: footer;
+  font-size: 2rem;
+}
+
+.time,
+.score,
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

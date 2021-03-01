@@ -1,4 +1,4 @@
-import { range, curry } from "ramda"
+import { range, curry, includes } from "ramda"
 
 import type { GameState, BoardIndex, CellState } from "types"
 import { checkPuttable, isValidIndex } from "./check"
@@ -24,7 +24,7 @@ export function validIndexes(state: GameState): BoardIndex[] {
   let numMax = 0
   state.boardState.forEach((item, i) => {
     item.forEach((cell, j) => {
-      if (cell !== undefined) {
+      if (includes(cell, ["ai", "opponent"])) {
         numMin = Math.min(numMin, i, j)
         numMax = Math.max(numMax, i, j)
       }

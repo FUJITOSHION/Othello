@@ -2,7 +2,7 @@ const aiStr = "ai"
 const opponentStr = "opponent"
 
 export type Player = typeof aiStr | typeof opponentStr
-export type CellState = Player | undefined
+export type CellState = Player | "puttable" | undefined
 export type BoardIndex = [number, number]
 export type Score = {
   [aiStr]: number

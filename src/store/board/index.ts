@@ -6,12 +6,14 @@ export type BoardState = {
   isFin: boolean
   winner?: Player
   score?: Score
+  isAiTurn: boolean
 }
 
 export const initialState: BoardState = {
   isFin: false,
   winner: undefined,
   score: undefined,
+  isAiTurn: false,
 }
 
 const gameConfigSlice = createSlice({
@@ -28,6 +30,9 @@ const gameConfigSlice = createSlice({
             ...payload,
           })
       }
+    },
+    setIsAiTurn: (state, { payload }: PayloadAction<boolean>) => {
+      state.isAiTurn = payload
     },
   },
 })

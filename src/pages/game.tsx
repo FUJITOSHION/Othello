@@ -9,7 +9,7 @@ import { MCTS, createConfig } from "@utils/mcts"
 import { GameNode } from "@utils/mcts/game-node"
 import { Layout } from "@components/Layout"
 import { ClientSideRender } from "@components/ClientSideRender"
-import { BoardSurface } from "../components/BoardSurface"
+import { Game } from "../components/Game"
 import { useAiLevel } from "@hooks/store/game-config"
 
 type GamePageProps = {
@@ -39,9 +39,7 @@ const GamePage: React.FC<GamePageProps> = ({ initJson }: GamePageProps) => {
             <Link href={pagesPath.$url()}>トップページへ</Link>
           </div>
         ) : (
-          <>
-            <BoardSurface mcts={mcts} conf={conf} />
-          </>
+          <Game mcts={mcts} conf={conf} />
         )}
       </ClientSideRender>
     </Layout>

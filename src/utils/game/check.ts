@@ -1,7 +1,7 @@
-import { curry } from "ramda"
+import { curry, includes } from "ramda"
 
 import type { GameState, BoardIndex, CellState } from "types"
-import { getCellState } from "./board-index"
+import { getCellState, validIndexes } from "./board-index"
 import { diffs } from "./simulate"
 import { NUMCELLSPERLINE } from "./index"
 
@@ -22,13 +22,14 @@ export function createCheckPuttable(
   }
 
   return (state: GameState, index: BoardIndex): boolean => {
-    if (typeof getCellState(state, index) !== "undefined") return false
+    if (includes(getCellState(state, index), ["ai", "opponent"])) return false
 
     let currentIndex: BoardIndex = getNextIndex(index)
     let currentState: CellState = getCellState(state, currentIndex)
 
     if (
       typeof currentState === "undefined" ||
+      currentState === "puttable" ||
       currentState === state.nextPlayer
     )
       return false
@@ -36,7 +37,7 @@ export function createCheckPuttable(
     currentIndex = getNextIndex(currentIndex)
     currentState = getCellState(state, currentIndex)
 
-    while (typeof currentState !== "undefined") {
+    while (!includes(currentState, [undefined, "puttable"])) {
       if (currentState === state.nextPlayer) {
         return true
       }
@@ -69,3 +70,16 @@ export const checkPuttable = curry(
     )
   }
 )
+
+export const applyIsValid = (state: GameState): GameState => ({
+  boardState: state.boardState.map((row, i) =>
+    row.map((cell, j) =>
+      includes([i, j], validIndexes(state))
+        ? "puttable"
+        : cell === "puttable"
+        ? undefined
+        : cell
+    )
+  ),
+  nextPlayer: state.nextPlayer,
+})

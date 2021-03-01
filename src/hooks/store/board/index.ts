@@ -27,3 +27,7 @@ export const useResult = (): {
     winner,
   }
 }
+
+export const useIsAiTurn = (): boolean => {
+  return useSelector((state: RootState) => state.board.isAiTurn)
+}

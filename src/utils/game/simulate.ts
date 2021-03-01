@@ -31,7 +31,7 @@ export function createApply(
     currentState = getCellState(state, currentIndex)
     put()
 
-    while (typeof currentState !== "undefined") {
+    while (typeof currentState !== "undefined" || currentState === "puttable") {
       if (currentState === state.nextPlayer) {
         return
       }
@@ -66,7 +66,10 @@ export const createApplyLine = curry(
 export const apply = curry(
   (state: GameState, index: BoardIndex): GameState => {
     const nextState: GameState = {
-      boardState: [...state.boardState.map((line) => [...line])],
+      boardState: state.boardState.map((line) =>
+        line.map((cell) => (cell === "puttable" ? undefined : cell))
+      ),
+      // boardState: [...state.boardState.map((line) => [...line])],E
       nextPlayer: state.nextPlayer,
     }
     diffs.forEach((diff) => createApplyLine(diff)(nextState, index))
@@ -139,6 +142,12 @@ export const checkFin = (state: GameState): ResCheckFin => {
       boardState: state.boardState,
       nextPlayer: state.nextPlayer === "ai" ? "opponent" : "ai",
     }).length === 0
+    // state.boardState.flat().filter((cell) => cell === "puttable").length ===
+    //   0 &&
+    // validIndexes({
+    //   boardState: state.boardState,
+    //   nextPlayer: state.nextPlayer === "ai" ? "opponent" : "ai",
+    // }).length === 0
   ) {
     return {
       isFin: true,
