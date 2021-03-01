@@ -2,6 +2,7 @@ import fs from "fs"
 
 import { MCTS, getInitCells } from "@utils/mcts"
 import { GameTree } from "@utils/mcts/game-tree"
+import { applyIsValid } from "@utils/game/check"
 
 const config = {
   expandThreshold: 20,
@@ -9,10 +10,13 @@ const config = {
   stepNumber: 10000,
 }
 
-const Mcts = new MCTS(config, {
-  boardState: getInitCells(true),
-  nextPlayer: "opponent",
-})
+const Mcts = new MCTS(
+  config,
+  applyIsValid({
+    boardState: getInitCells(true),
+    nextPlayer: "opponent",
+  })
+)
 fs.mkdir("./dist", { recursive: true }, (err) => {
   if (err) throw err
 })

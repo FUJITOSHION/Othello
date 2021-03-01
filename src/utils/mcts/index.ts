@@ -75,6 +75,7 @@ export class MCTS {
   select(): void {
     // 根ノードから葉ノードまで選択
     let currentNode = this.tree.getRootNode()
+    if (currentNode.isLeaf()) currentNode.setChildren()
     this.selectedNodeList = [currentNode]
 
     currentNode = currentNode.select(this.config)
