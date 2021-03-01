@@ -28,6 +28,5 @@
     "forceConsistentCasingInFileNames": true
   },
   "files": ["@types/globals.d.ts", "@types/vendors.d.ts"],
-  "include": ["src/**/*"],
-  "exclude": ["dist", "out", "node_modules", "tests"]
+  "include": ["src/**/*"]
 }

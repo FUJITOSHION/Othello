@@ -1,9 +1,6 @@
-import { CellState, GameState } from "../../../src/types/index"
-import { NUMCELLSPERLINE } from "../../../src/utils/game/index"
-import {
-  validIndexes,
-  createAllIndexes,
-} from "../../../src/utils/game/board-index"
+import { CellState, GameState } from "types/index"
+import { NUMCELLSPERLINE } from "@utils/game/index"
+import { validIndexes, createAllIndexes } from "@utils/game/board-index"
 
 // ボードがイメージしやすいように整形しないで置く
 // prettier-ignore

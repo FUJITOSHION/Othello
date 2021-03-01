@@ -1,5 +1,5 @@
-import { CellState, GameState } from "../../../src/types/index"
-import { apply, checkFin, aiCounter } from "../../../src/utils/game/simulate"
+import { CellState, GameState } from "types/index"
+import { apply, checkFin, aiCounter } from "@utils/game/simulate"
 
 test(`checkPuttableVertical`, () => {
   // prettier-ignore
